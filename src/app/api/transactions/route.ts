@@ -45,3 +45,9 @@ export async function POST(request:Request) {
         return NextResponse.json({error: "Internal server error"},{status : 500})
     }
 }
+
+// PUT /api/transactions/[id]
+export async function PUT() { }
+
+// DELETE /api/transactions/[id]
+export async function DELETE() {}

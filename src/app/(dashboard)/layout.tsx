@@ -1,0 +1,23 @@
+"use client";
+import { Sidebar } from "@/components/layout/Sidebar";
+import { Navbar } from "@/components/layout/Navbar";
+import { useState } from "react";
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  return (
+    <div className="flex min-h-screen">
+      <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
+
+      <div className="flex flex-1 flex-col">
+        <Navbar onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)} />
+
+        <main className="flex-1 overflow-y-auto p-6 md:p-8">{children}</main>
+      </div>
+    </div>
+  );
+}

@@ -33,7 +33,7 @@ export const Navbar = ({ onMenuClick }: NavbarProps) => {
           <Bell />
         </button>
         <div className="h-9 w-9 rounded-full bg-indigo-600 flex items-center justify-center text-sm font-medium text-white">
-          U
+          Z
         </div>
       </div>
     </header>

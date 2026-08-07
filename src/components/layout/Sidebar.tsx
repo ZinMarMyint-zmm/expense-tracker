@@ -51,8 +51,15 @@ export const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
             );
           })}
         </nav>
-        <div className="border-t border-[#6B6054] p-4 text-xs text-[#D5ECD4] mt-auto">
-          © 2026 Expense Tracker. All rights reserved.
+        <div className="border-t border-[#6B6054] mt-auto">
+          <Link href="/logout" className="flex items-center justify-center">
+            <button className="md:px-5 px-3 py-3 bg-[#D5ECD4] text-[#6B6054] rounded-lg text-sm font-medium transition-color">
+              Log out
+            </button>
+          </Link>
+          <p className="p-4 text-xs text-[#D5ECD4]">
+            © 2026 Expense Tracker. All rights reserved.
+          </p>
         </div>
       </aside>
     </>

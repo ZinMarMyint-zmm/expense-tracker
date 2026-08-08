@@ -5,3 +5,9 @@ export interface Category {
     color: string
     createdAt: string
 }
+
+export interface CreateCategoryInput{
+    name: string
+    icon: string
+    color: string
+}

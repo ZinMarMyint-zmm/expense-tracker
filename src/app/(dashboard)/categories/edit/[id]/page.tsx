@@ -6,31 +6,28 @@ export default function Home() {
   const router = useRouter();
   const { createCategory } = useCategories();
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const name = formData.get("name");
-    const icon = formData.get("icon");
-    const color = formData.get("color");
-    if (
-      typeof name !== "string" ||
-      typeof icon !== "string" ||
-      typeof color !== "string"
-    ) {
-      return;
-    }
-    await createCategory({ name, icon, color });
-    router.push("/categories");
-  };
+  // const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  //   event.preventDefault();
+  //   const formData = new FormData(event.currentTarget);
+  //   const name = formData.get("name");
+  //   const icon = formData.get("icon");
+  //   const color = formData.get("color");
+  //   if (
+  //     typeof name !== "string" ||
+  //     typeof icon !== "string" ||
+  //     typeof color !== "string"
+  //   ) {
+  //     return;
+  //   }
+  //   await createCategory({ name, icon, color });
+  //   router.push("/categories");
+  // };
   return (
     <>
       <section>
-        <form
-          onSubmit={handleSubmit}
-          className="mx-auto max-w-md bg-white p-5 mt-10 rounded space-y-4"
-        >
+        <form className="mx-auto max-w-md bg-white p-5 mt-10 rounded space-y-4">
           <h1 className="text-center my-3 font-extrabold text-2xl">
-            Category Form
+            CATEGORY UPDATE FORM
           </h1>
           <div>
             <label
@@ -86,7 +83,7 @@ export default function Home() {
             </Link>
 
             <button className="btn bg-[#6B6054] text-[#D5ECD4] px-2 py-1 rounded">
-              Submit
+              Update
             </button>
           </div>
         </form>

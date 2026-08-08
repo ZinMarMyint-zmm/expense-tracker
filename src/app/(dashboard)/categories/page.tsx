@@ -1,16 +1,19 @@
 "use client";
-import { useCategory } from "@/services/category.service";
+import { useCategories } from "@/hooks/useCategories";
 import { Trash, SquarePen } from "lucide-react";
 import Link from "next/link";
 export default function Home() {
-  const { categories } = useCategory();
+  const { categories, loading, error } = useCategories();
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div className="text-red-600">Error:{error}</div>;
   return (
     <section>
       <div className="flex justify-end gap-3 my-5">
-        <Link href="categories/add">
-          <button className="btn bg-[#6B6054] text-white p-2 rounded">
-            <p className="font-mono text-sm">Add Category</p>
-          </button>
+        <Link
+          href="categories/add"
+          className="font-mono text-sm btn bg-[#6B6054] text-white p-2 rounded"
+        >
+          Add Category
         </Link>
       </div>
       <div>
@@ -57,9 +60,11 @@ export default function Home() {
                     scope="row"
                     className="px-6 py-4 font-medium text-heading whitespace-nowrap"
                   >
-                    <button className="mr-2 text-blue-500">
-                      <SquarePen className="w-4 h-4" />
-                    </button>
+                    <Link href="categories/edit/${category.id}">
+                      <button className="mr-2 text-blue-500">
+                        <SquarePen className="w-4 h-4" />
+                      </button>
+                    </Link>
                     <button className="text-red-500">
                       <Trash className="w-4 h-4" />
                     </button>

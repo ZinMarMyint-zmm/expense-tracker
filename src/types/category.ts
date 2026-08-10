@@ -11,3 +11,4 @@ export interface CreateCategoryInput{
     icon: string
     color: string
 }
+

@@ -3,7 +3,7 @@ import { useCategories } from "@/hooks/useCategories";
 import { Trash, SquarePen } from "lucide-react";
 import Link from "next/link";
 export default function Home() {
-  const { categories, loading, error } = useCategories();
+  const { categories, loading, error, deleteCategory } = useCategories();
   if (loading) return <div>Loading...</div>;
   if (error) return <div className="text-red-600">Error:{error}</div>;
   return (
@@ -60,12 +60,22 @@ export default function Home() {
                     scope="row"
                     className="px-6 py-4 font-medium text-heading whitespace-nowrap"
                   >
-                    <Link href="categories/edit/${category.id}">
-                      <button className="mr-2 text-blue-500">
+                    <Link
+                      href={`categories/edit/${category.id}`}
+                      className="mr-2 text-blue-500"
+                    >
+                      <button>
                         <SquarePen className="w-4 h-4" />
                       </button>
                     </Link>
-                    <button className="text-red-500">
+                    <button
+                      onClick={() => {
+                        if (confirm(`Delete "${category.name}"?`)) {
+                          deleteCategory(category.id);
+                        }
+                      }}
+                      className="text-red-500"
+                    >
                       <Trash className="w-4 h-4" />
                     </button>
                   </td>

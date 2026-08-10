@@ -1,31 +1,48 @@
 "use client";
+
 import { useCategories } from "@/hooks/useCategories";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-export default function Home() {
-  const router = useRouter();
-  const { createCategory } = useCategories();
+import { useParams, useRouter } from "next/navigation";
+import { Category } from "@/types/category";
+import { useState, useEffect } from "react";
 
-  // const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-  //   event.preventDefault();
-  //   const formData = new FormData(event.currentTarget);
-  //   const name = formData.get("name");
-  //   const icon = formData.get("icon");
-  //   const color = formData.get("color");
-  //   if (
-  //     typeof name !== "string" ||
-  //     typeof icon !== "string" ||
-  //     typeof color !== "string"
-  //   ) {
-  //     return;
-  //   }
-  //   await createCategory({ name, icon, color });
-  //   router.push("/categories");
-  // };
+export default function Home() {
+  const [category, setCategory] = useState<Category | null>(null);
+  const router = useRouter();
+  const params = useParams();
+  const id = params.id as string;
+  const { getCategory, updateCategory } = useCategories();
+  const handleUpdate = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const name = formData.get("name");
+    const icon = formData.get("icon");
+    const color = formData.get("color");
+    if (
+      typeof name !== "string" ||
+      typeof icon !== "string" ||
+      typeof color !== "string"
+    ) {
+      return;
+    }
+    await updateCategory(id, { name, icon, color });
+    router.push("/categories");
+  };
+  useEffect(() => {
+    async function fetchCategory() {
+      const data = await getCategory(id);
+      setCategory(data);
+    }
+
+    fetchCategory();
+  }, [id]);
   return (
     <>
       <section>
-        <form className="mx-auto max-w-md bg-white p-5 mt-10 rounded space-y-4">
+        <form
+          onSubmit={handleUpdate}
+          className="mx-auto max-w-md bg-white p-5 mt-10 rounded space-y-4"
+        >
           <h1 className="text-center my-3 font-extrabold text-2xl">
             CATEGORY UPDATE FORM
           </h1>
@@ -40,6 +57,7 @@ export default function Home() {
               type="text"
               id="name"
               name="name"
+              defaultValue={category?.name ?? ""}
               className="border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
               placeholder="Category Name"
             />
@@ -55,6 +73,7 @@ export default function Home() {
               type="text"
               id="icon"
               name="icon"
+              defaultValue={category?.icon ?? ""}
               className="border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
               placeholder="Category Icon"
             />
@@ -70,6 +89,7 @@ export default function Home() {
               type="text"
               id="color"
               name="color"
+              defaultValue={category?.color ?? ""}
               className="border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
               placeholder="Category Color"
             />

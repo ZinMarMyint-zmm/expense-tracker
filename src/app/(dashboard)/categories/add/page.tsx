@@ -86,7 +86,7 @@ export default function Home() {
             </Link>
 
             <button className="btn bg-[#6B6054] text-[#D5ECD4] px-2 py-1 rounded">
-              Submit
+              Save
             </button>
           </div>
         </form>

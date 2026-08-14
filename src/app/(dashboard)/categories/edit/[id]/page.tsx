@@ -8,10 +8,13 @@ import { useState, useEffect } from "react";
 
 export default function Home() {
   const [category, setCategory] = useState<Category | null>(null);
+
   const router = useRouter();
   const params = useParams();
   const id = params.id as string;
+
   const { getCategory, updateCategory } = useCategories();
+
   const handleUpdate = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);

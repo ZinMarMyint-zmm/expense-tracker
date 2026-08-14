@@ -6,6 +6,31 @@ type RouteParams = {
   params: Promise<{ id: string }>;
 };
 
+//
+export async function GET(_request: Request, { params }: RouteParams) {
+  try {
+    const { id } = await params;
+    const transaction = await prisma.transaction.findUnique({
+      where: { id },
+    });
+    if (!transaction) {
+      return NextResponse.json(
+        { error: "Transaction not found" },
+        { status: 404 },
+      );
+    }
+
+    return NextResponse.json(transaction, { status: 200 });
+  } catch (error) {
+    console.error("Get Category Error", error);
+
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
+  }
+}
+
 // PUT /api/transactions/[id]
 export async function PUT(request: Request, { params }: RouteParams) {
   try {

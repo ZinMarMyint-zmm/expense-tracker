@@ -4,7 +4,7 @@ import { Trash, SquarePen } from "lucide-react";
 import Link from "next/link";
 export default function Home() {
   const { categories, loading, error, deleteCategory } = useCategories();
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div className="text-center">Loading...</div>;
   if (error) return <div className="text-red-600">Error:{error}</div>;
   return (
     <section>

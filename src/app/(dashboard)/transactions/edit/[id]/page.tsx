@@ -1,13 +1,21 @@
 "use client";
 import { useCategories } from "@/hooks/useCategories";
-import { createTransaction } from "@/services/transaction.service";
-import { TransactionType } from "@/types/transaction";
-import { useRouter } from "next/navigation";
+import { Transaction, TransactionType } from "@/types/transaction";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import { useState, useEffect } from "react";
+import { useTransactions } from "@/hooks/useTransactions";
+
 export default function Home() {
+  const [transaction, setTransaction] = useState<Transaction | null>(null);
   const router = useRouter();
+  const params = useParams();
+  const id = params.id as string;
+
   const { categories } = useCategories();
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const { getTransaction, updateTransaction } = useTransactions();
+
+  const handleUpdate = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const title = formData.get("title");
@@ -31,7 +39,7 @@ export default function Home() {
     if (Number.isNaN(amountNumber)) {
       return;
     }
-    await createTransaction({
+    await updateTransaction(id, {
       title,
       categoryId,
       type: type as TransactionType,
@@ -41,11 +49,20 @@ export default function Home() {
     });
     router.push("/transactions");
   };
+  useEffect(() => {
+    async function fetchTransaction() {
+      const data = await getTransaction(id);
+      setTransaction(data);
+    }
+
+    fetchTransaction();
+  }, [id]);
+
   return (
     <>
       <section>
         <form
-          onSubmit={handleSubmit}
+          onSubmit={handleUpdate}
           className="mx-auto max-w-md bg-white p-5 mt-5 rounded space-y-4"
         >
           <h1 className="text-center my-3 font-extrabold text-2xl">
@@ -62,6 +79,7 @@ export default function Home() {
               type="text"
               id="title"
               name="title"
+              defaultValue={transaction?.title ?? ""}
               className="border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
               placeholder="Title"
             />
@@ -76,6 +94,7 @@ export default function Home() {
             <select
               name="categoryId"
               id="categoryId"
+              defaultValue={transaction?.categoryId ?? ""}
               className="border border-default-medium text-heading text-sm rounded-base block w-full px-3 py-2.5"
             >
               {categories.map((category) => (
@@ -95,6 +114,7 @@ export default function Home() {
             <select
               id="type"
               name="type"
+              defaultValue={transaction?.type ?? ""}
               className="border border-default-medium text-heading text-sm rounded-base block w-full px-3 py-2.5"
             >
               <option value="EXPENSE">Expense</option>
@@ -112,6 +132,7 @@ export default function Home() {
               type="number"
               id="amount"
               name="amount"
+              defaultValue={transaction?.amount ?? ""}
               className="border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
               placeholder="Amount"
             />
@@ -127,6 +148,9 @@ export default function Home() {
               type="date"
               id="date"
               name="date"
+              defaultValue={
+                transaction?.date ? transaction.date.slice(0, 10) : ""
+              }
               className="border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
               placeholder="Date"
             />
@@ -142,6 +166,7 @@ export default function Home() {
               type="text"
               id="note"
               name="note"
+              defaultValue={transaction?.note ?? ""}
               className="border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
               placeholder="Note"
             />
@@ -153,7 +178,7 @@ export default function Home() {
               </button>
             </Link>
             <button className="btn bg-[#6B6054] text-[#D5ECD4] px-2 py-1 rounded">
-              Save
+              Update
             </button>
           </div>
         </form>

@@ -1,3 +1,5 @@
+"use client";
+import { useTransactions } from "@/hooks/useTransactions";
 import {
   Download,
   SquareArrowRightExit,
@@ -7,8 +9,12 @@ import {
   SquarePen,
 } from "lucide-react";
 import Link from "next/link";
+import { formatDate } from "@/utils/formatDate";
 
 export default function Home() {
+  const { transactions, loading, error, deleteTransaction } = useTransactions();
+  if (loading) return <div className="text-center">Loading...</div>;
+  if (error) return <div className="text-red-600">Error:{error}</div>;
   return (
     <section>
       <div className="flex justify-end gap-3 my-5">
@@ -54,10 +60,10 @@ export default function Home() {
                     Category
                   </th>
                   <th scope="col" className="px-6 py-3 text-heading">
-                    Amount
+                    Type
                   </th>
                   <th scope="col" className="px-6 py-3 text-heading">
-                    Type
+                    Amount
                   </th>
                   <th scope="col" className="px-6 py-3 text-heading">
                     Date
@@ -71,55 +77,69 @@ export default function Home() {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td
-                    scope="row"
-                    className="px-6 py-4 font-medium text-heading whitespace-nowrap"
-                  >
-                    Salary
-                  </td>
-                  <td
-                    scope="row"
-                    className="px-6 py-4 font-medium text-heading whitespace-nowrap"
-                  >
-                    Income
-                  </td>
-                  <td
-                    scope="row"
-                    className="px-6 py-4 font-medium text-heading whitespace-nowrap"
-                  >
-                    25000
-                  </td>
-                  <td
-                    scope="row"
-                    className="px-6 py-4 font-medium text-heading whitespace-nowrap"
-                  >
-                    Salary
-                  </td>
-                  <td
-                    scope="row"
-                    className="px-6 py-4 font-medium text-heading whitespace-nowrap"
-                  >
-                    07/08/2026
-                  </td>
-                  <td
-                    scope="row"
-                    className="px-6 py-4 font-medium text-heading whitespace-nowrap"
-                  >
-                    ...
-                  </td>
-                  <td
-                    scope="row"
-                    className="px-6 py-4 font-medium text-heading whitespace-nowrap"
-                  >
-                    <button className="mr-2 text-blue-500">
-                      <SquarePen className="w-4 h-4" />
-                    </button>
-                    <button className="text-red-500">
-                      <Trash className="w-4 h-4" />
-                    </button>
-                  </td>
-                </tr>
+                {transactions.map((transaction) => {
+                  return (
+                    <tr key={transaction.id}>
+                      <td
+                        scope="row"
+                        className="px-6 py-4 font-medium text-heading whitespace-nowrap"
+                      >
+                        {transaction.title}
+                      </td>
+                      <td
+                        scope="row"
+                        className="px-6 py-4 font-medium text-heading whitespace-nowrap"
+                      >
+                        {transaction.categoryId}
+                      </td>
+                      <td
+                        scope="row"
+                        className="px-6 py-4 font-medium text-heading whitespace-nowrap"
+                      >
+                        {transaction.type}
+                      </td>
+                      <td
+                        scope="row"
+                        className="px-6 py-4 font-medium text-heading whitespace-nowrap"
+                      >
+                        {transaction.amount}
+                      </td>
+                      <td
+                        scope="row"
+                        className="px-6 py-4 font-medium text-heading whitespace-nowrap"
+                      >
+                        {formatDate(transaction.date)}
+                      </td>
+                      <td
+                        scope="row"
+                        className="px-6 py-4 font-medium text-heading whitespace-nowrap"
+                      >
+                        {transaction.note}
+                      </td>
+
+                      <td
+                        scope="row"
+                        className="px-6 py-4 font-medium text-heading whitespace-nowrap"
+                      >
+                        <Link href={`/transactions/edit/${transaction.id}`}>
+                          <button className="mr-2 text-blue-500">
+                            <SquarePen className="w-4 h-4" />
+                          </button>
+                        </Link>
+                        <button
+                          onClick={() => {
+                            if (confirm(`Delete "${transaction.title}"?`)) {
+                              deleteTransaction(transaction.id);
+                            }
+                          }}
+                          className="text-red-500"
+                        >
+                          <Trash className="w-4 h-4" />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

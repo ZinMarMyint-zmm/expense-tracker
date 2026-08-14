@@ -32,14 +32,14 @@ export async function createCategory(category: CreateCategoryInput): Promise<Cat
 export async function getCategory(id: string): Promise<Category>{
   const response = await fetch(`/api/categories/${id}`);
 
-  console.log("GET category:", {
-    id,
-    status: response.status,
-    statusText: response.statusText,
-  });
+  // console.log("GET category:", {
+  //   id,
+  //   status: response.status,
+  //   statusText: response.statusText,
+  // });
   const data = await response.json();
 
-  console.log("Response data:", data);
+  // console.log("Response data:", data);
 
   if (!response.ok) {
     throw new Error("Failed to get category")
@@ -59,7 +59,7 @@ export async function updateCategory(id:string, category: CreateCategoryInput): 
     body:JSON.stringify({name,icon,color})
   })
   if (!response.ok) {
-      throw new Error("Failed to update categories");
+      throw new Error("Failed to update category");
   }
   
   return response.json()

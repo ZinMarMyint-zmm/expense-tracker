@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+
 import {
   PieChart,
   Pie,
@@ -9,35 +9,50 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-// Define the shape of your breakdown entries
-interface CategoryData {
+interface ExpenseCategoryData {
+  category: string;
+  amount: number;
+}
+
+interface ExpenseCategoryChartProps {
+  expenseByCategory: ExpenseCategoryData[];
+}
+
+interface ChartData {
   name: string;
   value: number;
   color: string;
 }
 
-// Recharts pass implicit parameters to custom dynamic label renderers
-interface PieLabelProps {
-  name: string;
-  percent: number;
-}
-
-const categoryData: CategoryData[] = [
-  { name: "Housing", value: 1800, color: "#3f51b5" },
-  { name: "Food", value: 600, color: "#ff9800" },
-  { name: "Bills", value: 350, color: "#009688" },
-  { name: "Transport", value: 450, color: "#9c27b0" },
-  { name: "Entertainment", value: 300, color: "#e91e63" },
-  { name: "Health", value: 500, color: "#607d8b" },
+const colors = [
+  "#3f51b5",
+  "#ff9800",
+  "#009688",
+  "#9c27b0",
+  "#e91e63",
+  "#607d8b",
 ];
 
-export const ExpenseCategoryChart: React.FC = () => {
+export const ExpenseCategoryChart = ({
+  expenseByCategory,
+}: ExpenseCategoryChartProps) => {
+  const total = expenseByCategory.reduce(
+    (sum, item) => sum + Number(item.amount),
+    0,
+  );
+
+  const chartData: ChartData[] = expenseByCategory.map((item, index) => ({
+    name: item.category,
+    value: Number(item.amount),
+    color: colors[index % colors.length],
+  }));
+
   return (
     <div style={{ width: "100%", height: 400 }}>
       <ResponsiveContainer>
         <PieChart>
           <Pie
-            data={categoryData}
+            data={chartData}
             dataKey="value"
             nameKey="name"
             cx="50%"
@@ -45,15 +60,19 @@ export const ExpenseCategoryChart: React.FC = () => {
             innerRadius={80}
             outerRadius={130}
             paddingAngle={4}
-            label={(entry: PieLabelProps) =>
-              `${entry.name} (${(entry.percent * 100).toFixed(0)}%)`
-            }
+            label={(entry) => {
+              const percentage = (entry.value / total) * 100;
+
+              return `${entry.name} (${percentage.toFixed(0)}%)`;
+            }}
           >
-            {categoryData.map((entry, index) => (
+            {chartData.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={entry.color} />
             ))}
           </Pie>
+
           <Tooltip formatter={(value: number) => [`$${value}`, "Amount"]} />
+
           <Legend verticalAlign="bottom" height={36} iconType="circle" />
         </PieChart>
       </ResponsiveContainer>

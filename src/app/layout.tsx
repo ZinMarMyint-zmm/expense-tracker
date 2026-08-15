@@ -27,7 +27,10 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body
+        className="min-h-full flex flex-col"
+        suppressHydrationWarning={true}
+      >
         {/* Layout Content wrapper */}
         <main className="flex-1 md:pl-64 transition-all duration-300">
           {children}

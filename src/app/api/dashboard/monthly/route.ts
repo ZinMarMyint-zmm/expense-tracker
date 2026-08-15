@@ -60,12 +60,12 @@ export async function GET() {
     //Structure into exact nested array format
     const finalPayload = Object.entries(monthlyMap).map(([month, data]) => {
       const balance = data.INCOME - data.EXPENSE;
-      return [
-        { month: month },
-        { INCOME: data.INCOME },
-        { EXPENSE: data.EXPENSE },
-        { BALANCE: balance },
-      ];
+      return {
+        month: month,
+        INCOME: data.INCOME,
+        EXPENSE: data.EXPENSE,
+        BALANCE: balance,
+      };
     });
     return NextResponse.json(finalPayload, { status: 200 });
   } catch (error) {

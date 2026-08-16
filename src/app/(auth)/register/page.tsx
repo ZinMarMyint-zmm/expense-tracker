@@ -1,22 +1,45 @@
+"use client";
 import Link from "next/link";
+import { register as registerService } from "@/services/register.service";
+import { useRouter } from "next/navigation";
 export default function Register() {
+  const router = useRouter();
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const name = formData.get("name");
+    const email = formData.get("email");
+    const password = formData.get("password");
+    if (
+      typeof name !== "string" ||
+      typeof email !== "string" ||
+      typeof password !== "string"
+    ) {
+      return;
+    }
+    await registerService({ name, email, password });
+    router.push("/login");
+  };
   return (
     <section>
       <form
-        action=""
+        onSubmit={handleSubmit}
         className="mx-auto max-w-md bg-white p-5 mt-5 rounded space-y-4"
       >
-        <h1 className="text-center my-3 font-extrabold text-2xl">Login Form</h1>
+        <h1 className="text-center my-3 font-extrabold text-2xl">
+          Register Form
+        </h1>
         <div>
           <label
-            htmlFor="username"
+            htmlFor="name"
             className="block mb-2.5 text-sm font-medium text-heading"
           >
             Username
           </label>
           <input
             type="text"
-            id="username"
+            id="name"
+            name="name"
             className="border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
             placeholder="Enter your name"
           />
@@ -31,6 +54,7 @@ export default function Register() {
           <input
             type="email"
             id="email"
+            name="email"
             className="border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
             placeholder="Enter your email"
           />
@@ -45,22 +69,9 @@ export default function Register() {
           <input
             type="password"
             id="password"
+            name="password"
             className="border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
             placeholder="Password"
-          />
-        </div>
-        <div>
-          <label
-            htmlFor="confirmPassword"
-            className="block mb-2.5 text-sm font-medium text-heading"
-          >
-            Confirm Password
-          </label>
-          <input
-            type="password"
-            id="confirmPassword"
-            className="border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
-            placeholder="Retype Password"
           />
         </div>
 

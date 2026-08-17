@@ -2,6 +2,7 @@
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Navbar } from "@/components/layout/Navbar";
 import { useState } from "react";
+import { AuthProvider } from "@/context/AuthContext";
 
 export default function RootLayout({
   children,
@@ -17,7 +18,7 @@ export default function RootLayout({
         <Navbar onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)} />
 
         <main className="flex-1 overflow-y-auto px-6 py-3 md:px-8">
-          {children}
+          <AuthProvider>{children}</AuthProvider>
         </main>
       </div>
     </div>

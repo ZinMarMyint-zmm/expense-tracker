@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import { createSession } from "@/lib/auth";
 
 // POST /api/auth/login
 export async function POST(request: Request) {
@@ -35,6 +36,10 @@ export async function POST(request: Request) {
         { status: 401 },
       );
     }
+
+    // create session
+    await createSession(user.id);
+    
     // success login response
     return NextResponse.json({
       message: "Login successful",

@@ -3,12 +3,22 @@ import { usePathname } from "next/navigation";
 import { SidebarProps } from "@/types/navigation";
 import Link from "next/link";
 import useLayout from "@/hooks/layout";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 export const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
   const { sidebarItems } = useLayout();
   const pathname = usePathname();
 
+  const { logout } = useAuth();
+  const router = useRouter();
+
   const toggleSidebar = () => setIsOpen(!isOpen);
+
+  async function handleLogout() {
+    await logout();
+    router.push("/login");
+  }
   return (
     <>
       {isOpen && (
@@ -52,11 +62,15 @@ export const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
           })}
         </nav>
         <div className="border-t border-[#6B6054] mt-auto">
-          <Link href="/logout" className="flex items-center justify-center">
-            <button className="md:px-5 px-3 py-3 bg-[#D5ECD4] text-[#6B6054] rounded-lg text-sm font-medium transition-color">
+          <div className="flex items-center justify-center">
+            <button
+              onClick={handleLogout}
+              className="md:px-5 px-3 py-3 bg-[#D5ECD4] text-[#6B6054] rounded-lg text-sm font-medium transition-color"
+            >
               Log out
             </button>
-          </Link>
+          </div>
+
           <p className="p-4 text-xs text-[#D5ECD4]">
             © 2026 Expense Tracker. All rights reserved.
           </p>

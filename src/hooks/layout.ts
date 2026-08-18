@@ -5,7 +5,7 @@ import { ItemCard } from "@/types/dashboard";
 export default function useLayout() {
 
     const sidebarItems: SidebarItem[] = [
-    { title: "Dashboard", href: "/", icon: Home },
+    { title: "Dashboard", href: "/dashboard", icon: Home },
     { title: "Transactions", href: "/transactions", icon: ArrowLeftRight },
     { title: "Categories", href: "/categories", icon: ChartBarStacked },
     ]

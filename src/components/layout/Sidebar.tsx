@@ -17,7 +17,7 @@ export const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
 
   async function handleLogout() {
     await logout();
-    router.push("/login");
+    router.push("/");
   }
   return (
     <>

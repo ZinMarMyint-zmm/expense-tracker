@@ -1,26 +1,16 @@
-"use client";
-import { Sidebar } from "@/components/layout/Sidebar";
-import { Navbar } from "@/components/layout/Navbar";
-import { useState } from "react";
-import { AuthProvider } from "@/context/AuthContext";
+import { getCurrentUser } from "@/lib/auth";
+import { redirect } from "next/navigation";
+import DashboardLayout from "./DashboardLayout";
 
-export default function RootLayout({
+export default async function Layout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  return (
-    <div className="flex min-h-screen">
-      <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
+}) {
+  const user = await getCurrentUser();
 
-      <div className="flex flex-1 flex-col">
-        <Navbar onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)} />
-
-        <main className="flex-1 overflow-y-auto px-6 py-3 md:px-8">
-          <AuthProvider>{children}</AuthProvider>
-        </main>
-      </div>
-    </div>
-  );
+  if (!user) {
+    redirect("/login");
+  }
+  return <DashboardLayout>{children}</DashboardLayout>;
 }

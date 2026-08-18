@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Expense Tracker App",
-  description: "Next.js Tailwind TypeScript",
+  title: "Money Tracker",
+  description: "Track your income and expenses",
 };
 
 export default function RootLayout({
@@ -28,14 +28,8 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body
-        className="min-h-full flex flex-col"
-        suppressHydrationWarning={true}
-      >
-        {/* Layout Content wrapper */}
-        <main className="flex-1 md:pl-64 transition-all duration-300">
-          <AuthProvider>{children}</AuthProvider>
-        </main>
+      <body className="min-h-full">
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );

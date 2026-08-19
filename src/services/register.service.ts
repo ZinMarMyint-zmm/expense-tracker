@@ -11,9 +11,11 @@ export async function register(user:CreateUserInput):Promise<User> {
         body:JSON.stringify({name,email,password})
     })
 
+    const data = await response.json()
+
     if (!response.ok) {
-        throw new Error ("Failed to create a new user")
+        throw new Error (data.error || "Failed to create a new user")
     }
 
-    return response.json()
+    return data
 }

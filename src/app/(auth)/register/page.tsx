@@ -24,8 +24,12 @@ export default function Register() {
       return;
     }
 
-    await registerService({ name, email, password });
-    router.push("/login");
+    try {
+      await registerService({ name, email, password });
+      router.push("/login");
+    } catch (error) {
+      console.error("Registration failed", error);
+    }
   };
 
   return (
@@ -89,6 +93,7 @@ export default function Register() {
                   type="text"
                   id="name"
                   name="name"
+                  required
                   placeholder="Enter your name"
                   className="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm text-[#6B6054] outline-none transition focus:border-[#6B6054] focus:ring-2 focus:ring-[#D5ECD4]"
                 />
@@ -107,6 +112,7 @@ export default function Register() {
                   type="email"
                   id="email"
                   name="email"
+                  required
                   placeholder="Enter your email"
                   className="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm text-[#6B6054] outline-none transition focus:border-[#6B6054] focus:ring-2 focus:ring-[#D5ECD4]"
                 />
@@ -125,6 +131,7 @@ export default function Register() {
                   type="password"
                   id="password"
                   name="password"
+                  required
                   placeholder="Create a password"
                   className="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm text-[#6B6054] outline-none transition focus:border-[#6B6054] focus:ring-2 focus:ring-[#D5ECD4]"
                 />

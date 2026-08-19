@@ -2,8 +2,11 @@ import useLayout from "@/hooks/layout";
 import { NavbarProps } from "@/types/navigation";
 import { Menu, Bell } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 export const Navbar = ({ onMenuClick }: NavbarProps) => {
+  const { user, loading } = useAuth();
+
   const { sidebarItems } = useLayout();
   const pathname = usePathname();
 
@@ -29,11 +32,11 @@ export const Navbar = ({ onMenuClick }: NavbarProps) => {
       </div>
       {/* right side  */}
       <div className="flex items-center gap-4">
-        <button className="rounded-full bg-gray-100 p-2 text-gray-600 hover:bg-gray-200">
+        {/* <button className="rounded-full bg-gray-100 p-2 text-gray-600 hover:bg-gray-200">
           <Bell />
-        </button>
+        </button> */}
         <div className="h-9 w-9 rounded-full bg-indigo-600 flex items-center justify-center text-sm font-medium text-white">
-          Z
+          {!loading && user?.name ? user.name.charAt(0).toUpperCase() : ""}
         </div>
       </div>
     </header>

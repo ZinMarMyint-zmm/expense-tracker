@@ -3,6 +3,7 @@ export interface Category {
     name: string
     icon: string
     color: string
+    isActive:boolean
     createdAt: Date
 }
 

@@ -42,6 +42,7 @@ export default function Login() {
           alt="Money Tracker login"
           fill
           priority
+          sizes="50vw"
           className="object-cover"
         />
 

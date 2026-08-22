@@ -7,7 +7,7 @@ export default function useLayout() {
     const sidebarItems: SidebarItem[] = [
     { title: "Dashboard", href: "/dashboard", icon: Home },
     { title: "Transactions", href: "/transactions", icon: ArrowLeftRight },
-    { title: "Categories", href: "/categories", icon: ChartBarStacked },
+    { title: "Categories", href: "/categories", icon: ChartBarStacked,adminOnly: true, },
     ]
     
     const ItemCardData: ItemCard[] = [

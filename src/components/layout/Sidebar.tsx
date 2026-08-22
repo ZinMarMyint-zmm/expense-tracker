@@ -2,7 +2,7 @@
 import { usePathname } from "next/navigation";
 import { SidebarProps } from "@/types/navigation";
 import Link from "next/link";
-import useLayout from "@/hooks/layout";
+import useLayout from "@/hooks/useLayout";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -13,7 +13,7 @@ export const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
   const { sidebarItems } = useLayout();
   const pathname = usePathname();
 
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const router = useRouter();
 
   const toggleSidebar = () => setIsOpen(!isOpen);
@@ -43,26 +43,28 @@ export const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
         </div>
 
         <nav>
-          {sidebarItems.map((item) => {
-            const isActive = pathname === item.href;
-            const Icon = item.icon;
+          {sidebarItems
+            .filter((item) => !item.adminOnly || user?.role === "ADMIN")
+            .map((item) => {
+              const isActive = pathname === item.href;
+              const Icon = item.icon;
 
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setIsOpen(false)} // Closes mobile menu drawer on link click
-                className={`flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors ${
-                  isActive
-                    ? "bg-[#929487] text-white"
-                    : "text-[#D5ECD4] hover:bg-[#6B6054] hover:text-white"
-                }`}
-              >
-                <Icon className="h-5 w-5 shrink-0" />
-                <span>{item.title}</span>
-              </Link>
-            );
-          })}
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setIsOpen(false)} // Closes mobile menu drawer on link click
+                  className={`flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors ${
+                    isActive
+                      ? "bg-[#929487] text-white"
+                      : "text-[#D5ECD4] hover:bg-[#6B6054] hover:text-white"
+                  }`}
+                >
+                  <Icon className="h-5 w-5 shrink-0" />
+                  <span>{item.title}</span>
+                </Link>
+              );
+            })}
         </nav>
         <div className="border-t border-[#6B6054] mt-auto">
           <div className="flex items-center justify-center">

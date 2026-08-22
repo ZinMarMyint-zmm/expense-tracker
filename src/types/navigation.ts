@@ -1,7 +1,8 @@
 export interface SidebarItem {
     title: string;
     href: string;
-    icon: React.ComponentType<{className?: string} >;
+    icon: React.ComponentType<{ className?: string }>;
+    adminOnly?: boolean;
 }
 
 export interface NavbarProps{

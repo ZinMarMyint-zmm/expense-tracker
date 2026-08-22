@@ -1,9 +1,15 @@
+import { getCurrentUser } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
 // GET /api/dashboard/monthly
 export async function GET() {
   try {
+    const user = await getCurrentUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
     const now = new Date();
     // Start of the month 5 months ago (0:00 AM)
     const startOfRange = new Date(
@@ -18,6 +24,7 @@ export async function GET() {
     const monthly = await prisma.transaction.groupBy({
       by: ["date", "type"],
       where: {
+        userId: user.id,
         date: {
           gte: startOfRange,
           lt: endOfRange,

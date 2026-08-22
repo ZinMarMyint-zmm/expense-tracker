@@ -69,7 +69,7 @@ model Transaction {
   userId String
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   categoryId String
-  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id])
 
 }
 

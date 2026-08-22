@@ -1,8 +1,14 @@
+import { getCurrentUser } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
+    const user = await getCurrentUser();
+    
+        if (!user) {
+          return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
     const startOfMonth = new Date();
     startOfMonth.setDate(1);
     startOfMonth.setHours(0, 0, 0, 0);
@@ -15,6 +21,7 @@ export async function GET() {
       by: ["categoryId"],
       where: {
         type: "EXPENSE",
+        userId: user.id,
         date: {
           gte: startOfMonth,
           lt: endOfMonth,

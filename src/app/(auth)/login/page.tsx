@@ -5,10 +5,11 @@ import { login as loginService } from "@/services/login.service";
 import { useRouter } from "next/navigation";
 import login from "@/assets/login.jpeg";
 import Image from "next/image";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Login() {
   const router = useRouter();
-
+  const { refreshUser } = useAuth();
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -26,6 +27,7 @@ export default function Login() {
         email,
         password,
       });
+      await refreshUser();
 
       router.push("/dashboard");
     } catch (error) {

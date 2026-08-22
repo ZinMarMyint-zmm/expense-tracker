@@ -18,6 +18,7 @@ type AuthContextType = {
   user: User | null;
   loading: boolean;
   logout: () => Promise<void>;
+  refreshUser: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -26,28 +27,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function fetchCurrentUser() {
-      try {
-        const response = await fetch("/api/auth/me");
+  const refreshUser = async () => {
+    try {
+      const response = await fetch("/api/auth/me");
 
-        if (!response.ok) {
-          setUser(null);
-          return;
-        }
-
-        const data = await response.json();
-
-        setUser(data.user);
-      } catch (error) {
-        console.error("Failed to fetch current user", error);
+      if (!response.ok) {
         setUser(null);
-      } finally {
-        setLoading(false);
+        return;
       }
+
+      const data = await response.json();
+      setUser(data.user);
+    } catch (error) {
+      console.error("Failed to fetch current user", error);
+      setUser(null);
     }
-    fetchCurrentUser();
+  };
+
+  useEffect(() => {
+    const initializeAuth = async () => {
+      await refreshUser();
+      setLoading(false);
+    };
+
+    initializeAuth();
   }, []);
+
   async function logout() {
     try {
       const response = await fetch("/api/auth/logout", {
@@ -65,11 +70,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, logout }}>
+    <AuthContext.Provider value={{ user, loading, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );
 }
+
 export function useAuth() {
   const context = useContext(AuthContext);
 

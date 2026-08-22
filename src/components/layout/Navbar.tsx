@@ -1,4 +1,4 @@
-import useLayout from "@/hooks/layout";
+import useLayout from "@/hooks/useLayout";
 import { NavbarProps } from "@/types/navigation";
 import { Menu, Bell } from "lucide-react";
 import { usePathname } from "next/navigation";

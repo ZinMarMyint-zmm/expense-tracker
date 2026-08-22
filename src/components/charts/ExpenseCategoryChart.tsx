@@ -48,7 +48,7 @@ export const ExpenseCategoryChart = ({
   }));
 
   return (
-    <div style={{ width: "100%", height: 400 }}>
+    <div style={{ width: "100%", height: 350 }}>
       <ResponsiveContainer>
         <PieChart>
           <Pie
@@ -57,13 +57,13 @@ export const ExpenseCategoryChart = ({
             nameKey="name"
             cx="50%"
             cy="50%"
-            innerRadius={80}
-            outerRadius={130}
+            innerRadius={50}
+            outerRadius={100}
             paddingAngle={4}
             label={(entry) => {
               const percentage = (entry.value / total) * 100;
 
-              return `${entry.name} (${percentage.toFixed(0)}%)`;
+              return `(${percentage.toFixed(0)}%)`;
             }}
           >
             {chartData.map((entry, index) => (

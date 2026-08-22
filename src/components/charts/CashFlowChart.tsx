@@ -25,7 +25,7 @@ interface CashFlowChartProps {
 export const CashFlowChart = ({ monthly }: CashFlowChartProps) => {
   console.log(monthly);
   return (
-    <div style={{ width: "100%", height: 400 }}>
+    <div style={{ width: "100%", height: 350 }}>
       <ResponsiveContainer>
         <ComposedChart
           data={monthly}
@@ -37,9 +37,9 @@ export const CashFlowChart = ({ monthly }: CashFlowChartProps) => {
           <Tooltip formatter={(value: number) => [`$${value}`, ""]} />
           <Legend />
 
-          <Bar dataKey="INCOME" fill="#4caf50" name="INCOME" />
-          <Bar dataKey="EXPENSE" fill="#f44336" name="EXPENSE" />
-          <Bar dataKey="BALANCE" fill="#2196f3" name="BALANCE" />
+          <Bar dataKey="INCOME" fill="#4caf50" name="Income" />
+          <Bar dataKey="EXPENSE" fill="#f44336" name="Expense" />
+          <Bar dataKey="BALANCE" fill="#2196f3" name="Balance" />
         </ComposedChart>
       </ResponsiveContainer>
     </div>

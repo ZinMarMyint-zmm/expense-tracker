@@ -1,9 +1,15 @@
+import { getCurrentUser } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
 // GET /api/dashboard/summary
 export async function GET() {
   try {
+    const user = await getCurrentUser();
+
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
     const startOfMonth = new Date();
     startOfMonth.setDate(1);
     startOfMonth.setHours(0, 0, 0, 0);
@@ -16,6 +22,7 @@ export async function GET() {
     const summary = await prisma.transaction.groupBy({
       by: ["type"],
       where: {
+        userId: user.id,
         date: {
           gte: startOfMonth,
           lt: endOfMonth,

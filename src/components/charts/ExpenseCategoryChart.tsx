@@ -71,7 +71,9 @@ export const ExpenseCategoryChart = ({
             ))}
           </Pie>
 
-          <Tooltip formatter={(value: number) => [`$${value}`, "Amount"]} />
+          <Tooltip
+            formatter={(value) => [`$${Number(value).toFixed(2)}`, "Amount"]}
+          />
 
           <Legend verticalAlign="bottom" height={36} iconType="circle" />
         </PieChart>

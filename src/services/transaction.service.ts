@@ -1,7 +1,25 @@
-import { Transaction, CreateTransactionInput } from "@/types/transaction";
+import {
+  Transaction,
+  CreateTransactionInput,
+  TransactionFilters,
+} from "@/types/transaction";
 
-export async function getTransactions(): Promise<Transaction[]> {
-  const response = await fetch("/api/transactions");
+export async function getTransactions(
+  filters?: TransactionFilters,
+): Promise<Transaction[]> {
+  const params = new URLSearchParams();
+
+  if (filters?.startDate) {
+    params.set("startDate", filters.startDate);
+  }
+
+  if (filters?.endDate) {
+    params.set("endDate", filters.endDate);
+  }
+
+  const query = params.toString();
+
+  const response = await fetch(`/api/transactions${query ? `?${query}` : ""}`);
 
   if (!response.ok) {
     throw new Error("Failed to fetch transactions");

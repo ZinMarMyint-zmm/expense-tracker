@@ -6,19 +6,21 @@ import {
   updateTransaction as updateTransactionService,
   deleteTransaction as deleteTransactionService,
 } from "@/services/transaction.service";
-import { CreateTransactionInput, Transaction } from "@/types/transaction";
-import { useState, useEffect } from "react";
+import { CreateTransactionInput, Transaction,TransactionFilters } from "@/types/transaction";
+import { useState, useEffect, useCallback } from "react";
+
+
 export const useTransactions = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  const fetchTransactions = async () => {
+  const fetchTransactions = useCallback(async (filters?: TransactionFilters) => {
     try {
       setLoading(true);
       setError("");
-      const transactions = await getTransactions();
-      setTransactions(transactions);
+      const data = await getTransactions(filters);
+      setTransactions(data);
     } catch (error) {
       console.error("Failed to fetch transactions", error);
       setError("Failed to fetch transactions");
@@ -26,7 +28,10 @@ export const useTransactions = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+  useEffect(() => {
+    fetchTransactions();
+  }, [fetchTransactions]);
 
   const createTransaction = async ({
     title,
@@ -86,39 +91,19 @@ export const useTransactions = () => {
     }
   };
 
-  // const deleteTransaction = async (id: string) => {
-  //   try {
-  //     await deleteTransactionService(id);
-  //     setTransactions((prev) =>
-  //       prev.filter((transaction) => transaction.id !== id),
-  //     );
-  //   } catch (error) {
-  //     console.error("Failed to delete transaction", error);
-  //   }
-  // };
   const deleteTransaction = async (id: string) => {
-  try {
-    await deleteTransactionService(id);
+    try {
+      await deleteTransactionService(id);
 
-    console.log("DELETE SUCCESS:", id);
+      setTransactions((prev) => {
+        const updated = prev.filter((transaction) => transaction.id !== id);
 
-    setTransactions((prev) => {
-      const updated = prev.filter(
-        (transaction) => transaction.id !== id,
-      );
-
-      console.log("UPDATED TRANSACTIONS:", updated);
-
-      return updated;
-    });
-  } catch (error) {
-    console.error("Failed to delete transaction", error);
-  }
-};
-
-  useEffect(() => {
-    fetchTransactions();
-  }, []);
+        return updated;
+      });
+    } catch (error) {
+      console.error("Failed to delete transaction", error);
+    }
+  };
 
   return {
     fetchTransactions,

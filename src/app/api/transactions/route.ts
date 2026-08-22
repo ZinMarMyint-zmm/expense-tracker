@@ -3,16 +3,35 @@ import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
 // GET /api/transactions
-export async function GET() {
+export async function GET(request:Request) {
   try {
     const user = await getCurrentUser();
 
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+    const { searchParams } = new URL(request.url);
+
+    const startDate = searchParams.get("startDate");
+    const endDate = searchParams.get("endDate");
+    
+    const dateFilter: {
+      gte?: Date;
+      lte?: Date;
+    } = {};
+
+    if (startDate) {
+      dateFilter.gte = new Date(startDate);
+    }
+
+    if (endDate) {
+      dateFilter.lte = new Date(endDate);
+    }
+
     const transactions = await prisma.transaction.findMany({
       where: {
         userId: user.id,
+        ...(startDate || endDate ? { date: dateFilter } : {}),
       },
       orderBy: {
         date: "desc",

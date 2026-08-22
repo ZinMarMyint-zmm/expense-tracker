@@ -21,3 +21,8 @@ export interface CreateTransactionInput{
     note: string | null
 }
 
+export type TransactionFilters = {
+  startDate?: string;
+  endDate?: string;
+};
+

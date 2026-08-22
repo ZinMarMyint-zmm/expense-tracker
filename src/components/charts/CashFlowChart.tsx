@@ -34,7 +34,9 @@ export const CashFlowChart = ({ monthly }: CashFlowChartProps) => {
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
           <XAxis dataKey="month" stroke="#666" />
           <YAxis stroke="#666" tickFormatter={(value: number) => `$${value}`} />
-          <Tooltip formatter={(value: number) => [`$${value}`, ""]} />
+          <Tooltip
+            formatter={(value) => [`$${Number(value).toFixed(2)}`, "Amount"]}
+          />
           <Legend />
 
           <Bar dataKey="INCOME" fill="#4caf50" name="Income" />

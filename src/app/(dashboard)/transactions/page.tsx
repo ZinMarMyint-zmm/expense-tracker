@@ -10,9 +10,22 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { formatDate } from "@/utils/formatDate";
+import { useState } from "react";
 
 export default function Home() {
-  const { transactions, loading, error, deleteTransaction } = useTransactions();
+  const { fetchTransactions, transactions, loading, error, deleteTransaction } =
+    useTransactions();
+
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
+  const handleFilter = () => {
+    fetchTransactions({
+      startDate,
+      endDate,
+    });
+  };
+
   if (loading) return <div className="text-center">Loading...</div>;
   if (error) return <div className="text-red-600">Error:{error}</div>;
   return (
@@ -36,17 +49,34 @@ export default function Home() {
       <div className="flex md:flex-row flex-col gap-4 justify-center mb-5">
         <div className="w-full md:flex-1 bg-white p-6 rounded-sm shadow">
           <div className="flex justify-end gap-3">
-            <button className="btn p-2 border-gray-300 shadow flex items-center gap-1">
-              <Calendar className="w-3 h-3" />
-              <p className="text-xs">Start Date</p>
-            </button>
-            <button className="btn p-2 border-gray-300 shadow flex items-center gap-1">
-              <Calendar className="w-3 h-3" />
-              <p className="text-xs">End Date</p>
-            </button>
-            <button className="btn p-2 border-gray-300 shadow flex items-center gap-1">
-              <Funnel className="w-3 h-3" />
-              <p className="text-xs">Filter</p>
+            <div className="relative">
+              <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="rounded border border-gray-300 bg-white py-2 pl-9 pr-3 text-sm text-gray-600 shadow-sm focus:border-[#6B6054] focus:outline-none"
+              />
+            </div>
+
+            <div className="relative">
+              <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="rounded border border-gray-300 bg-white py-2 pl-9 pr-3 text-sm text-gray-600 shadow-sm focus:border-[#6B6054] focus:outline-none"
+              />
+            </div>
+
+            <button
+              onClick={handleFilter}
+              className="flex items-center gap-1 rounded border border-gray-300 bg-white p-2 text-sm shadow"
+            >
+              <Funnel className="h-3 w-3" />
+              <span>Filter</span>
             </button>
           </div>
           <div className="my-5 bg-gray-200">

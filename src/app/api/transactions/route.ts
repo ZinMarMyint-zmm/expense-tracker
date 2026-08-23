@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
 // GET /api/transactions
-export async function GET(request:Request) {
+export async function GET(request: Request) {
   try {
     const user = await getCurrentUser();
 
@@ -14,10 +14,10 @@ export async function GET(request:Request) {
 
     const startDate = searchParams.get("startDate");
     const endDate = searchParams.get("endDate");
-    
+
     const dateFilter: {
       gte?: Date;
-      lte?: Date;
+      lt?: Date;
     } = {};
 
     if (startDate) {
@@ -25,13 +25,19 @@ export async function GET(request:Request) {
     }
 
     if (endDate) {
-      dateFilter.lte = new Date(endDate);
+      const end = new Date(endDate);
+      end.setDate(end.getDate() + 1);
+
+      dateFilter.lt = end;
     }
 
     const transactions = await prisma.transaction.findMany({
       where: {
         userId: user.id,
         ...(startDate || endDate ? { date: dateFilter } : {}),
+      },
+      include: {
+        category: true,
       },
       orderBy: {
         date: "desc",

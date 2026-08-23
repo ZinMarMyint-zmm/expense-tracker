@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { formatDate } from "@/utils/formatDate";
+import { exportTransactions } from "@/utils/exportTransactions";
 import { useState } from "react";
 
 export default function Home() {
@@ -26,6 +27,10 @@ export default function Home() {
     });
   };
 
+  const handleExport = () => {
+    exportTransactions(transactions);
+  };
+
   if (loading) return <div className="text-center">Loading...</div>;
   if (error) return <div className="text-red-600">Error:{error}</div>;
   return (
@@ -35,7 +40,10 @@ export default function Home() {
           <Download className="w-4 h-4" />
           <p className="font-mono text-sm">Pdf Download</p>
         </button>
-        <button className="btn bg-[#ffff] text-black p-2 rounded flex items-center gap-1">
+        <button
+          onClick={handleExport}
+          className="btn bg-[#ffff] text-black p-2 rounded flex items-center gap-1"
+        >
           <SquareArrowRightExit className="w-4 h-4" />
           <p className="font-mono text-sm">Export</p>
         </button>
@@ -120,7 +128,7 @@ export default function Home() {
                         scope="row"
                         className="px-6 py-4 font-medium text-heading whitespace-nowrap"
                       >
-                        {transaction.categoryId}
+                        {transaction.category.name}
                       </td>
                       <td
                         scope="row"

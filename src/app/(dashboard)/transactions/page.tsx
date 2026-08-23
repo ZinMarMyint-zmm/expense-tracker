@@ -11,6 +11,7 @@ import {
 import Link from "next/link";
 import { formatDate } from "@/utils/formatDate";
 import { exportTransactions } from "@/utils/exportTransactions";
+import { generateTransactionPDF } from "@/utils/generateTransactionPDF";
 import { useState } from "react";
 
 export default function Home() {
@@ -31,12 +32,19 @@ export default function Home() {
     exportTransactions(transactions);
   };
 
+  const handlePDFDownload = () => {
+    generateTransactionPDF(transactions);
+  };
+
   if (loading) return <div className="text-center">Loading...</div>;
   if (error) return <div className="text-red-600">Error:{error}</div>;
   return (
     <section>
       <div className="flex justify-end gap-3 my-5">
-        <button className="btn bg-[#ffff] text-black p-2 rounded flex items-center gap-1">
+        <button
+          onClick={handlePDFDownload}
+          className="btn bg-[#ffff] text-black p-2 rounded flex items-center gap-1"
+        >
           <Download className="w-4 h-4" />
           <p className="font-mono text-sm">Pdf Download</p>
         </button>

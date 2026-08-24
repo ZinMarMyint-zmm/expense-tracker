@@ -7,7 +7,7 @@ export async function POST(request: Request) {
   try {
     const { name, email, password } = await request.json();
 
-    // 1. Validate required fields
+    // Validate required fields
     if (!name || !email || !password) {
       return NextResponse.json(
         { error: "Name, email and password are required." },
@@ -15,7 +15,7 @@ export async function POST(request: Request) {
       );
     }
 
-    // 2. Validate password
+    // Validate password
     if (password.length < 6) {
       return NextResponse.json(
         { error: "Password must be at least 6 characters" },
@@ -23,10 +23,10 @@ export async function POST(request: Request) {
       );
     }
 
-    // 3. Normalize email
+    // Normalize email
     const normalizedEmail = email.toLowerCase();
 
-    // 4. Check existing user
+    // Check existing user
     const existingUser = await prisma.user.findUnique({
       where: {
         email: normalizedEmail,
@@ -40,10 +40,10 @@ export async function POST(request: Request) {
       );
     }
 
-    // 5. Hash password
+    // Hash password
     const passwordHash = await bcrypt.hash(password, 12);
 
-    // 6. Create user
+    // Create user
     const newUser = await prisma.user.create({
       data: {
         name,
@@ -52,7 +52,7 @@ export async function POST(request: Request) {
       },
     });
 
-    // 7. Return safe user data
+    // Return safe user data
     return NextResponse.json(
       {
         message: "User registered successfully",

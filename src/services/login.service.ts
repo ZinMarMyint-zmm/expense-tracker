@@ -12,8 +12,9 @@ export async function login(user:LoginInput):Promise<User> {
     })
 
     if (!response.ok) {
-        throw new Error ("Failed to create a new user")
-    }
+  const data = await response.json();
+  throw new Error(data.error || "Failed to login");
+}
 
     return response.json()
 }

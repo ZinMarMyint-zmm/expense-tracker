@@ -80,34 +80,35 @@ export const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
             © 2026 Expense Tracker. All rights reserved.
           </p>
         </div>
-        {showLogoutModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#6B6054]/50 px-4">
-            <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
-              <h2 className="text-xl font-bold text-[#6B6054]">Log out?</h2>
+      </aside>
+      {showLogoutModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#6B6054]/50 px-4">
+          <div className="absolute inset-0 bg-black/30" />
+          <div className="relative z-10 w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
+            <h2 className="text-xl font-bold text-[#6B6054]">Log out?</h2>
 
-              <p className="mt-2 text-sm text-gray-500">
-                Are you sure you want to log out of your account?
-              </p>
+            <p className="mt-2 text-sm text-gray-500">
+              Are you sure you want to log out of your account?
+            </p>
 
-              <div className="mt-6 flex justify-end gap-3">
-                <button
-                  onClick={() => setShowLogoutModal(false)}
-                  className="rounded-lg bg-[#D5ECD4] px-4 py-2 text-sm font-semibold text-[#6B6054]"
-                >
-                  Cancel
-                </button>
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                onClick={() => setShowLogoutModal(false)}
+                className="rounded-lg bg-[#D5ECD4] px-4 py-2 text-sm font-semibold text-[#6B6054]"
+              >
+                Cancel
+              </button>
 
-                <button
-                  onClick={handleLogout}
-                  className="rounded-lg bg-[#6B6054] px-4 py-2 text-sm font-semibold text-[#D5ECD4]"
-                >
-                  Log out
-                </button>
-              </div>
+              <button
+                onClick={handleLogout}
+                className="rounded-lg bg-[#6B6054] px-4 py-2 text-sm font-semibold text-[#D5ECD4]"
+              >
+                Log out
+              </button>
             </div>
           </div>
-        )}
-      </aside>
+        </div>
+      )}
     </>
   );
 };

@@ -6,10 +6,13 @@ import { useRouter } from "next/navigation";
 import login from "@/assets/login.jpeg";
 import Image from "next/image";
 import { useAuth } from "@/context/AuthContext";
+import { useState } from "react";
 
 export default function Login() {
+  const [error, setError] = useState("");
   const router = useRouter();
   const { refreshUser } = useAuth();
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -23,6 +26,7 @@ export default function Login() {
     }
 
     try {
+      setError("");
       await loginService({
         email,
         password,
@@ -31,7 +35,11 @@ export default function Login() {
 
       router.push("/dashboard");
     } catch (error) {
-      console.error("Login failed", error);
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("Failed to login");
+      }
     }
   };
 
@@ -118,6 +126,7 @@ export default function Login() {
           </div>
 
           {/* Login */}
+          {error && <p className="text-sm text-red-500">{error}</p>}
           <button
             type="submit"
             className="w-full rounded-lg bg-[#6B6054] py-3 text-sm font-semibold text-white transition hover:bg-[#A6C36F]"

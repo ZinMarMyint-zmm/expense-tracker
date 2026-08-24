@@ -1,5 +1,6 @@
 "use client";
 
+import { CashFlowChartProps } from "@/types/dashboard";
 import {
   ComposedChart,
   Bar,
@@ -12,15 +13,6 @@ import {
 } from "recharts";
 
 // Define the shape of your monthly financial records
-interface MonthlyData {
-  month: string;
-  INCOME: number;
-  EXPENSE: number;
-  BALANCE: number;
-}
-interface CashFlowChartProps {
-  monthly: MonthlyData[];
-}
 
 export const CashFlowChart = ({ monthly }: CashFlowChartProps) => {
   console.log(monthly);

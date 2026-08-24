@@ -1,5 +1,6 @@
 "use client";
 
+import { ChartData, ExpenseCategoryChartProps } from "@/types/dashboard";
 import {
   PieChart,
   Pie,
@@ -8,21 +9,6 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-
-interface ExpenseCategoryData {
-  category: string;
-  amount: number;
-}
-
-interface ExpenseCategoryChartProps {
-  expenseByCategory: ExpenseCategoryData[];
-}
-
-interface ChartData {
-  name: string;
-  value: number;
-  color: string;
-}
 
 const colors = [
   "#3f51b5",

@@ -97,27 +97,27 @@ export default function Home() {
           </div>
           <div className="my-5 bg-gray-200">
             <table className="table-auto md:table-fixed w-full text-sm text-left rtl:text-right text-body">
-              <thead className="text-sm text-body bg-neutral-secondary-soft border-b rounded-base border-default">
+              <thead className="text-sm font-medium text-body bg-neutral-secondary-soft border-b rounded-base border-default">
                 <tr>
-                  <th scope="col" className="px-6 py-3 text-heading">
+                  <th scope="col" className="px-4 py-3 text-heading">
                     Title
                   </th>
-                  <th scope="col" className="px-6 py-3 text-heading">
+                  <th scope="col" className="px-4 py-3 text-heading">
                     Category
                   </th>
-                  <th scope="col" className="px-6 py-3 text-heading">
+                  <th scope="col" className="px-4 py-3 text-heading">
                     Type
                   </th>
-                  <th scope="col" className="px-6 py-3 text-heading">
+                  <th scope="col" className="px-4 py-3 text-heading">
                     Amount
                   </th>
-                  <th scope="col" className="px-6 py-3 text-heading">
+                  <th scope="col" className="px-4 py-3 text-heading">
                     Date
                   </th>
-                  <th scope="col" className="px-6 py-3 text-heading">
+                  <th scope="col" className="px-4 py-3 text-heading">
                     Note
                   </th>
-                  <th scope="col" className="px-6 py-3 text-heading">
+                  <th scope="col" className="px-4 py-3 text-heading">
                     Actions
                   </th>
                 </tr>
@@ -128,44 +128,44 @@ export default function Home() {
                     <tr key={transaction.id}>
                       <td
                         scope="row"
-                        className="px-6 py-4 font-medium text-heading whitespace-nowrap"
+                        className="px-4 py-3 font-medium text-heading whitespace-nowrap"
                       >
                         {transaction.title}
                       </td>
                       <td
                         scope="row"
-                        className="px-6 py-4 font-medium text-heading whitespace-nowrap"
+                        className="px-4 py-3 font-medium text-heading whitespace-nowrap"
                       >
                         {transaction.category.name}
                       </td>
                       <td
                         scope="row"
-                        className="px-6 py-4 font-medium text-heading whitespace-nowrap"
+                        className="px-4 py-3 font-medium text-heading whitespace-nowrap"
                       >
                         {transaction.type}
                       </td>
                       <td
                         scope="row"
-                        className="px-6 py-4 font-medium text-heading whitespace-nowrap"
+                        className="px-4 py-3 font-medium text-heading whitespace-nowrap"
                       >
                         {transaction.amount}
                       </td>
                       <td
                         scope="row"
-                        className="px-6 py-4 font-medium text-heading whitespace-nowrap"
+                        className="px-4 py-3 font-medium text-heading whitespace-nowrap"
                       >
                         {formatDate(transaction.date)}
                       </td>
                       <td
                         scope="row"
-                        className="px-6 py-4 font-medium text-heading whitespace-nowrap"
+                        className="px-4 py-3 font-medium text-heading whitespace-nowrap"
                       >
                         {transaction.note}
                       </td>
 
                       <td
                         scope="row"
-                        className="px-6 py-4 font-medium text-heading whitespace-nowrap"
+                        className="px-4 py-3 font-medium text-heading whitespace-nowrap"
                       >
                         <Link href={`/transactions/edit/${transaction.id}`}>
                           <button className="mr-2 text-blue-500">

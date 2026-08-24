@@ -42,7 +42,7 @@ export const ItemCard = ({ summary }: ItemCardProps) => {
           Income
         </p>
         <h1 className="font-bold text-2xl text-emerald-600">
-          ${formatCurrency(income)}
+          + ฿{formatCurrency(income)}
         </h1>
         <p>for this month</p>
       </div>
@@ -54,7 +54,7 @@ export const ItemCard = ({ summary }: ItemCardProps) => {
           Expense
         </p>
         <h1 className="font-bold text-2xl text-rose-600">
-          ${formatCurrency(expense)}
+          - ฿{formatCurrency(expense)}
         </h1>
         <p>for this month</p>
       </div>
@@ -65,7 +65,7 @@ export const ItemCard = ({ summary }: ItemCardProps) => {
           <Banknote />
           Balance
         </p>
-        <h1 className="font-bold text-2xl">${formatCurrency(balance)}</h1>
+        <h1 className="font-bold text-2xl">฿{formatCurrency(balance)}</h1>
         <p>for this month</p>
       </div>
     </section>

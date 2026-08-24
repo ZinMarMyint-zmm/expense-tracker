@@ -17,13 +17,9 @@ export async function GET(_request: Request, { params }: RouteParams) {
     }
     const { id } = await params;
 
-    console.log("GET category ID:", id);
-
     const category = await prisma.category.findUnique({
       where: { id },
     });
-
-    console.log("Found category:", category);
 
     if (!category) {
       return NextResponse.json(
@@ -100,7 +96,6 @@ export async function PUT(request: Request, { params }: RouteParams) {
   }
 }
 
-// DELETE /api/categories/[id]
 // DELETE /api/categories/[id]
 export async function DELETE(request: Request, { params }: RouteParams) {
   try {

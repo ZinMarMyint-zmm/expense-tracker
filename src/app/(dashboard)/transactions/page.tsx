@@ -12,19 +12,33 @@ import Link from "next/link";
 import { formatDate } from "@/utils/formatDate";
 import { exportTransactions } from "@/utils/exportTransactions";
 import { generateTransactionPDF } from "@/utils/generateTransactionPDF";
+import { getPaginationPages } from "@/utils/getPaginationPages";
 import { useState } from "react";
 
 export default function Home() {
-  const { fetchTransactions, transactions, loading, error, deleteTransaction } =
-    useTransactions();
+  const {
+    fetchTransactions,
+    transactions,
+    pagination,
+    loading,
+    error,
+    deleteTransaction,
+  } = useTransactions();
 
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
+  const isFiltered = Boolean(startDate || endDate);
+
+  const [page, setPage] = useState(1);
+
   const handleFilter = () => {
+    setPage(1);
     fetchTransactions({
       startDate,
       endDate,
+      page: 1,
+      limit: 10,
     });
   };
 
@@ -36,7 +50,23 @@ export default function Home() {
     generateTransactionPDF(transactions);
   };
 
-  if (loading) return <div className="text-center">Loading...</div>;
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+    fetchTransactions({
+      startDate,
+      endDate,
+      page: newPage,
+      limit: 10,
+    });
+  };
+
+  if (loading) {
+    return (
+      <div className="flex min-h-75 items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-[#6B6054]" />
+      </div>
+    );
+  }
   if (error) return <div className="text-red-600">Error:{error}</div>;
   return (
     <section>
@@ -122,9 +152,21 @@ export default function Home() {
                   </th>
                 </tr>
               </thead>
+
               <tbody>
-                {transactions.map((transaction) => {
-                  return (
+                {transactions.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan={7}
+                      className="px-6 py-12 text-center text-gray-500"
+                    >
+                      {isFiltered
+                        ? "No transactions found for the selected date range."
+                        : "No transactions yet."}
+                    </td>
+                  </tr>
+                ) : (
+                  transactions.map((transaction) => (
                     <tr key={transaction.id}>
                       <td
                         scope="row"
@@ -184,11 +226,62 @@ export default function Home() {
                         </button>
                       </td>
                     </tr>
-                  );
-                })}
+                  ))
+                )}
               </tbody>
             </table>
           </div>
+          {pagination.totalPages > 1 && (
+            <div className="flex items-center justify-between border-t border-gray-200 px-2 py-4">
+              <button
+                onClick={() => handlePageChange(page - 1)}
+                disabled={page === 1 || loading}
+                className="rounded border border-gray-300 px-3 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Previous
+              </button>
+
+              <div className="flex items-center gap-2">
+                {getPaginationPages(page, pagination.totalPages).map(
+                  (pageNumber, index) => {
+                    if (pageNumber === "...") {
+                      return (
+                        <span
+                          key={`ellipsis-${index}`}
+                          className="px-2 text-sm text-gray-500"
+                        >
+                          ...
+                        </span>
+                      );
+                    }
+
+                    return (
+                      <button
+                        key={pageNumber}
+                        onClick={() => handlePageChange(pageNumber)}
+                        disabled={loading}
+                        className={`rounded px-3 py-2 text-sm ${
+                          page === pageNumber
+                            ? "bg-[#6B6054] text-white"
+                            : "border border-gray-300 bg-white text-gray-700"
+                        }`}
+                      >
+                        {pageNumber}
+                      </button>
+                    );
+                  },
+                )}
+              </div>
+
+              <button
+                onClick={() => handlePageChange(page + 1)}
+                disabled={page === pagination.totalPages || loading}
+                className="rounded border border-gray-300 px-3 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </section>

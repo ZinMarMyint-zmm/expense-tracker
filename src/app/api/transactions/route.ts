@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 // GET /api/transactions
 export async function GET(request: Request) {
   try {
+    //current user
     const user = await getCurrentUser();
 
     if (!user) {
@@ -12,6 +13,7 @@ export async function GET(request: Request) {
     }
     const { searchParams } = new URL(request.url);
 
+    //filter
     const startDate = searchParams.get("startDate");
     const endDate = searchParams.get("endDate");
 
@@ -31,19 +33,53 @@ export async function GET(request: Request) {
       dateFilter.lt = end;
     }
 
-    const transactions = await prisma.transaction.findMany({
-      where: {
-        userId: user.id,
-        ...(startDate || endDate ? { date: dateFilter } : {}),
+    //pagination
+    const page = Math.max(1, Number(searchParams.get("page")) || 1);
+
+    const limit = Math.min(
+      50,
+      Math.max(1, Number(searchParams.get("limit")) || 10),
+    );
+
+    const skip = (page - 1) * limit;
+
+    const where = {
+      userId: user.id,
+      ...(startDate || endDate ? { date: dateFilter } : {}),
+    };
+
+    const [transactions, total] = await Promise.all([
+      prisma.transaction.findMany({
+        where,
+        include: {
+          category: true,
+        },
+        orderBy: {
+          date: "desc",
+        },
+        skip,
+        take: limit,
+      }),
+
+      prisma.transaction.count({
+        where,
+      }),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    return NextResponse.json(
+      {
+        transactions,
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPages,
+        },
       },
-      include: {
-        category: true,
-      },
-      orderBy: {
-        date: "desc",
-      },
-    });
-    return NextResponse.json(transactions, { status: 200 });
+      { status: 200 },
+    );
   } catch (error) {
     console.error("Failed to fetch transactions", error);
     return NextResponse.json(

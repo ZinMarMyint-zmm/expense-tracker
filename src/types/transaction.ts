@@ -31,5 +31,19 @@ export interface CreateTransactionInput{
 export type TransactionFilters = {
   startDate?: string;
   endDate?: string;
+  page?: number;
+  limit?: number;
 };
+
+export interface TransactionPagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+export interface TransactionsResponse {
+  transactions: Transaction[];
+  pagination: TransactionPagination;
+}
 

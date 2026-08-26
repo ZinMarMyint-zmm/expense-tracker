@@ -6,29 +6,54 @@ import {
   updateTransaction as updateTransactionService,
   deleteTransaction as deleteTransactionService,
 } from "@/services/transaction.service";
-import { CreateTransactionInput, Transaction,TransactionFilters } from "@/types/transaction";
+import {
+  CreateTransactionInput,
+  Transaction,
+  TransactionFilters,
+  TransactionPagination,
+} from "@/types/transaction";
 import { useState, useEffect, useCallback } from "react";
-
 
 export const useTransactions = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [pagination, setPagination] = useState<TransactionPagination>({
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPages: 0,
+  });
 
-  const fetchTransactions = useCallback(async (filters?: TransactionFilters) => {
-    try {
-      setLoading(true);
-      setError("");
-      const data = await getTransactions(filters);
-      setTransactions(data);
-    } catch (error) {
-      console.error("Failed to fetch transactions", error);
-      setError("Failed to fetch transactions");
-      setTransactions([]);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const fetchTransactions = useCallback(
+    async (newFilters?: TransactionFilters) => {
+      try {
+        setLoading(true);
+        setError("");
+
+        const data = await getTransactions(newFilters);
+
+        setTransactions(data.transactions);
+        setPagination(data.pagination);
+      } catch (error) {
+        console.error("Failed to fetch transactions", error);
+
+        setError("Failed to fetch transactions");
+        setTransactions([]);
+
+        setPagination({
+          page: 1,
+          limit: 10,
+          total: 0,
+          totalPages: 0,
+        });
+      } finally {
+        setLoading(false);
+      }
+    },
+    [],
+  );
+
   useEffect(() => {
     fetchTransactions();
   }, [fetchTransactions]);
@@ -42,7 +67,7 @@ export const useTransactions = () => {
     note,
   }: CreateTransactionInput) => {
     try {
-      const newTransaction = await createTransactionService({
+      await createTransactionService({
         title,
         categoryId,
         type,
@@ -50,7 +75,10 @@ export const useTransactions = () => {
         date,
         note,
       });
-      setTransactions((prev) => [...prev, newTransaction]);
+      await fetchTransactions({
+        page: pagination.page,
+        limit: pagination.limit,
+      });
     } catch (error) {
       console.error("Failed to create transaction", error);
     }
@@ -95,11 +123,30 @@ export const useTransactions = () => {
     try {
       await deleteTransactionService(id);
 
-      setTransactions((prev) => {
-        const updated = prev.filter((transaction) => transaction.id !== id);
+      const currentPage = pagination.page;
 
-        return updated;
+      const data = await getTransactions({
+        page: currentPage,
+        limit: pagination.limit,
       });
+
+      if (
+        currentPage > data.pagination.totalPages &&
+        data.pagination.totalPages > 0
+      ) {
+        const previousPage = currentPage - 1;
+
+        const previousData = await getTransactions({
+          page: previousPage,
+          limit: pagination.limit,
+        });
+
+        setTransactions(previousData.transactions);
+        setPagination(previousData.pagination);
+      } else {
+        setTransactions(data.transactions);
+        setPagination(data.pagination);
+      }
     } catch (error) {
       console.error("Failed to delete transaction", error);
     }
@@ -109,6 +156,7 @@ export const useTransactions = () => {
     fetchTransactions,
     transactions,
     loading,
+    pagination,
     error,
     createTransaction,
     updateTransaction,

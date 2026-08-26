@@ -2,11 +2,12 @@ import {
   Transaction,
   CreateTransactionInput,
   TransactionFilters,
+  TransactionsResponse,
 } from "@/types/transaction";
 
 export async function getTransactions(
   filters?: TransactionFilters,
-): Promise<Transaction[]> {
+): Promise<TransactionsResponse> {
   const params = new URLSearchParams();
 
   if (filters?.startDate) {
@@ -15,6 +16,14 @@ export async function getTransactions(
 
   if (filters?.endDate) {
     params.set("endDate", filters.endDate);
+  }
+
+  if (filters?.page !== undefined) {
+    params.set("page", String(filters.page));
+  }
+
+  if (filters?.limit !== undefined) {
+    params.set("limit", String(filters.limit));
   }
 
   const query = params.toString();

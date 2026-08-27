@@ -1,122 +1,246 @@
-# 💸 Smart Expense Tracker & Financial Analytics Platform
+# Smart Expense Tracker
 
-A production-ready, full-stack personal finance and expense tracking application built with **Next.js App Router**, **TypeScript**, **Prisma ORM**, and **PostgreSQL**.
+A full-stack personal finance and expense tracking application built with **Next.js App Router**, **TypeScript**, **Prisma ORM**, and **PostgreSQL**.
 
----
+## Features
 
-## 🌟 Key Engineering Features
+### Authentication & Authorization
 
-- **Custom Session-Based Authentication:** Secure, stateless session handling integrated with Prisma.
-- **Relational Data Integrity:** Cascade deletions and foreign key constraints between Users, Transactions, and Categories.
-- **Type-Safe Database Access:** Fully typed queries using Prisma ORM with PostgreSQL.
-- **Transactional Consistency:** Accurate `INCOME` and `EXPENSE` calculations using PostgreSQL `Decimal` types to avoid floating-point precision issues.
-- **Optimized Performance:** Fast data fetching using Next.js Server Components, Server Actions, and database indexing.
+- User registration and login
+- Database-backed session authentication
+- HTTP-only session cookies
+- Role-based authorization
+- Admin-only category management
 
----
+### Transaction Management
 
-## 📐 System Architecture & Data Flow
+- Create, update, and delete transactions
+- Income and expense tracking
+- Category-based transactions
+- Date-range filtering
+- Paginated transaction list
 
-```mermaid
-graph TD
-    Client[Next.js Client Components] -->|Server Actions / API| Server[Next.js App Router Server]
-    Server -->|Session Validation| Auth[Session Auth Guard]
-    Auth -->|Type-safe Query| Prisma[Prisma ORM]
-    Prisma -->|ACID Transactions| DB[(PostgreSQL Database)]
-```
+### Analytics & Export
 
----
+- Monthly cash flow visualization
+- Expense breakdown by category
+- CSV export
+- Client-side PDF generation
 
-## 🗄️ Database Schema (ERD)
+### Data Management
 
-The application utilizes a normalized PostgreSQL relational database schema:
+- PostgreSQL relational database
+- Prisma ORM
+- Foreign key relationships
+- Soft deletion for categories
+- Decimal values for financial amounts
 
-```mermaid
-erDiagram
-    User ||--o{ Session : "has many"
-    User ||--o{ Transaction : "tracks"
-    Category ||--o{ Transaction : "categorizes"
+## Tech Stack
 
-    User {
-        string id PK
-        string email UK
-        string passwordHash
-        UserRole role
-    }
-
-    Session {
-        string id PK
-        string userId FK
-        datetime expiresAt
-    }
-
-    Category {
-        string id PK
-        string name UK
-        string icon
-        string color
-    }
-
-    Transaction {
-        string id PK
-        string title
-        TransactionType type
-        decimal amount
-        datetime date
-        string userId FK
-        string categoryId FK
-    }
-```
-
----
-
-## 🛠️ Tech Stack
-
-- **Framework:** Next.js (App Router, Server Actions)
+- **Framework:** Next.js App Router
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS
 - **Database & ORM:** PostgreSQL, Prisma ORM
-- **Authentication:** Custom Session-based Auth (`Session` Model)
-- **Deployment:** Vercel (Frontend/Backend), Neon / Supabase (PostgreSQL)
+- **Authentication:** Custom session-based authentication
+- **Deployment:** Vercel
 
----
+## Architecture
 
-## 🚀 Local Development Setup
+The application follows a simple client-to-server architecture:
+
+```text
+Client Components
+       ↓
+Next.js API Routes
+       ↓
+Authentication / Authorization
+       ↓
+Prisma ORM
+       ↓
+PostgreSQL
+```
+
+Client components handle the user interface and call service functions to communicate with the API routes.
+
+The API routes handle authentication, authorization, validation, and database operations through Prisma.
+
+## Database Schema
+
+The application uses PostgreSQL with the following main models:
+
+```text
+User
+ ├── Session
+ └── Transaction
+        └── Category
+```
+
+### Main relationships
+
+- A user can have multiple sessions.
+- A user can have multiple transactions.
+- A category can be used by multiple transactions.
+- Each transaction belongs to one user and one category.
+- Categories use soft deletion so existing transaction records are not removed when a category is deactivated.
+
+The main models are:
+
+```text
+User
+- id
+- name
+- email
+- passwordHash
+- role
+- createdAt
+- updatedAt
+
+Session
+- id
+- userId
+- expiresAt
+- createdAt
+
+Category
+- id
+- name
+- icon
+- color
+- isActive
+- createdAt
+
+Transaction
+- id
+- title
+- type
+- amount
+- date
+- note
+- userId
+- categoryId
+- createdAt
+- updatedAt
+```
+
+## Authentication & Authorization
+
+Authentication is handled using database-backed sessions.
+
+After a successful login:
+
+1. A session is created in the database.
+2. The session ID is stored in an HTTP-only cookie.
+3. The current user is retrieved from the session.
+4. Protected API routes check whether the user is authenticated.
+5. Admin-only routes additionally check the user's role.
+
+For example, category creation, update, and deletion require an `ADMIN` role.
+
+## Local Development
 
 ### Prerequisites
 
-- Node.js (v18+)
-- PostgreSQL Database URL
+- Node.js
+- PostgreSQL
+- npm
 
 ### Installation Steps
 
-1. **Clone the repository:**
+1. **Clone the repository**
 
-   ```bash
-   git clone [https://github.com/your-username/expense-tracker.git](https://github.com/your-username/expense-tracker.git)
-   cd expense-tracker
-   ```
+```bash
+git clone https://github.com/ZinMarMyint-zmm/expense-tracker.git
+cd expense-tracker
+```
 
-2. **Install dependencies:**
+2. **Install dependencies**
 
-   ```bash
-   npm install
-   ```
+```bash
+npm install
+```
 
-3. **Configure Environment Variables:**
-   Create a `.env` file in the root directory:
+3. **Configure environment variables**
 
-   ```env
-   DATABASE_URL="postgresql://user:password@localhost:5432/expensetracker?schema=public"
-   ```
+Create a `.env` file in the root directory:
 
-4. **Run Database Migrations:**
+```env
+DATABASE_URL="postgresql://user:password@localhost:5432/expensetracker?schema=public"
+```
 
-   ```bash
-   npx prisma migrate dev --name init
-   ```
+4. **Run database migrations**
 
-5. **Start Development Server:**
-   ```bash
-   npm run dev
-   ```
-   Open [http://localhost:3000](http://localhost:3000) in your browser.
+```bash
+npx prisma migrate dev
+```
+
+5. **Start the development server**
+
+```bash
+npm run dev
+```
+
+Open `http://localhost:3000` in your browser.
+
+## Environment Variables
+
+The application requires the following environment variable:
+
+| Variable       | Description                           |
+| -------------- | ------------------------------------- |
+| `DATABASE_URL` | PostgreSQL database connection string |
+
+## Project Structure
+
+```text
+src/
+├── app/
+│   ├── (auth)/
+│   ├── (dashboard)/
+│   └── api/
+├── components/
+├── hooks/
+├── lib/
+├── services/
+├── types/
+└── utils/
+
+prisma/
+└── schema.prisma
+```
+
+- `app/` — Pages, layouts, and API routes
+- `components/` — Reusable UI components
+- `hooks/` — Client-side state and data-fetching logic
+- `lib/` — Shared server-side utilities such as authentication and Prisma
+- `services/` — API communication functions
+- `types/` — TypeScript types
+- `utils/` — Utility functions such as date formatting and export/PDF generation
+- `prisma/` — Database schema and Prisma configuration
+
+## Screenshots
+
+### Dashboard
+
+![Dashboard](./public/screenshots/dashboard.png)
+
+### Transactions page
+
+![Transactions](./public/screenshots/transactions.png)
+
+### Add transaction
+
+![AddTransaction](./public/screenshots/addtransactionform.png)
+
+### Category management
+
+![CategoryManagement](./public/screenshots/categorymanagement.png)
+
+### Login
+
+![Login](./public/screenshots/signin.png)
+
+## Future Improvements
+
+- Add more advanced transaction filtering and sorting
+- Add additional financial reports and analytics
+- Improve notification and error feedback

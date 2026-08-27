@@ -66,7 +66,7 @@ export default function Home() {
           className="mx-auto max-w-md bg-white p-5 mt-5 rounded space-y-4"
         >
           <h1 className="text-center my-3 font-extrabold text-2xl">
-            Transaction Form
+            Edit Transaction Form
           </h1>
           <div>
             <label

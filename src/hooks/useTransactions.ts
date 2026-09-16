@@ -1,4 +1,5 @@
 "use client";
+
 import {
   getTransactions,
   createTransaction as createTransactionService,
@@ -12,76 +13,37 @@ import {
   TransactionFilters,
   TransactionPagination,
 } from "@/types/transaction";
-import { useState, useEffect, useCallback } from "react";
+
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useTransactions = () => {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [pagination, setPagination] = useState<TransactionPagination>({
+  const queryClient = useQueryClient();
+  //GET
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["transactions"],
+    queryFn: () => getTransactions(),
+  });
+
+  const transactions = data?.transactions ?? [];
+  const pagination = data?.pagination ?? {
     page: 1,
     limit: 10,
     total: 0,
     totalPages: 0,
+  };
+
+  //Create
+  const createMutation = useMutation({
+    mutationFn: createTransactionService,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["transactions"],
+      });
+    },
   });
 
-  const fetchTransactions = useCallback(
-    async (newFilters?: TransactionFilters) => {
-      try {
-        setLoading(true);
-        setError("");
-
-        const data = await getTransactions(newFilters);
-
-        setTransactions(data.transactions);
-        setPagination(data.pagination);
-      } catch (error) {
-        console.error("Failed to fetch transactions", error);
-
-        setError("Failed to fetch transactions");
-        setTransactions([]);
-
-        setPagination({
-          page: 1,
-          limit: 10,
-          total: 0,
-          totalPages: 0,
-        });
-      } finally {
-        setLoading(false);
-      }
-    },
-    [],
-  );
-
-  useEffect(() => {
-    fetchTransactions();
-  }, [fetchTransactions]);
-
-  const createTransaction = async ({
-    title,
-    categoryId,
-    type,
-    amount,
-    date,
-    note,
-  }: CreateTransactionInput) => {
-    try {
-      await createTransactionService({
-        title,
-        categoryId,
-        type,
-        amount,
-        date,
-        note,
-      });
-      await fetchTransactions({
-        page: pagination.page,
-        limit: pagination.limit,
-      });
-    } catch (error) {
-      console.error("Failed to create transaction", error);
-    }
+  const createTransaction = async (input: CreateTransactionInput) => {
+    await createMutation.mutateAsync(input);
   };
 
   const getTransaction = async (id: string) => {
@@ -94,70 +56,51 @@ export const useTransactions = () => {
     }
   };
 
+  const updateMutation = useMutation({
+    mutationFn: ({
+      id,
+    input,
+    }: {
+    id: string;
+      input: CreateTransactionInput;
+      }) => updateTransactionService(id, input),
+    
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["transactions"],
+      });
+    }
+  })
   const updateTransaction = async (
     id: string,
-    { title, categoryId, type, amount, date, note }: CreateTransactionInput,
+    input: CreateTransactionInput,
   ) => {
-    try {
-      const updatedTransaction = await updateTransactionService(id, {
-        title,
-        categoryId,
-        type,
-        amount,
-        date,
-        note,
-      });
-      setTransactions((prev) =>
-        prev.map((transaction) =>
-          transaction.id === updatedTransaction.id
-            ? updatedTransaction
-            : transaction,
-        ),
-      );
-    } catch (error) {
-      console.error("Failed to update transaction", error);
-    }
+    await updateMutation.mutateAsync({
+      id,
+      input,
+    });
   };
 
-  const deleteTransaction = async (id: string) => {
-    try {
-      await deleteTransactionService(id);
+  
+  const deleteMutation = useMutation({
+    mutationFn: deleteTransactionService,
 
-      const currentPage = pagination.page;
-
-      const data = await getTransactions({
-        page: currentPage,
-        limit: pagination.limit,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["transactions"],
       });
+    },
+  });
 
-      if (
-        currentPage > data.pagination.totalPages &&
-        data.pagination.totalPages > 0
-      ) {
-        const previousPage = currentPage - 1;
-
-        const previousData = await getTransactions({
-          page: previousPage,
-          limit: pagination.limit,
-        });
-
-        setTransactions(previousData.transactions);
-        setPagination(previousData.pagination);
-      } else {
-        setTransactions(data.transactions);
-        setPagination(data.pagination);
-      }
-    } catch (error) {
-      console.error("Failed to delete transaction", error);
-    }
+  const deleteTransaction = async (id: string) => {
+    await deleteMutation.mutateAsync(id);
   };
 
   return {
-    fetchTransactions,
     transactions,
-    loading,
     pagination,
-    error,
+    loading: isLoading,
+    error: isError ? "Failed to fetch transactions" : "",
     createTransaction,
     updateTransaction,
     getTransaction,

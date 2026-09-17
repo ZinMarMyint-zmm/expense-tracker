@@ -17,9 +17,10 @@ import { useState } from "react";
 
 export default function Home() {
   const {
-    fetchTransactions,
     transactions,
     pagination,
+    filters,
+    setFilters,
     loading,
     error,
     deleteTransaction,
@@ -28,18 +29,15 @@ export default function Home() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
-  const isFiltered = Boolean(startDate || endDate);
-
-  const [page, setPage] = useState(1);
+  const isFiltered = Boolean(filters.startDate || filters.endDate);
 
   const handleFilter = () => {
-    setPage(1);
-    fetchTransactions({
-      startDate,
-      endDate,
+    setFilters((prev) => ({
+      ...prev,
+      startDate: startDate || undefined,
+      endDate: endDate || undefined,
       page: 1,
-      limit: 10,
-    });
+    }));
   };
 
   const handleExport = () => {
@@ -51,13 +49,10 @@ export default function Home() {
   };
 
   const handlePageChange = (newPage: number) => {
-    setPage(newPage);
-    fetchTransactions({
-      startDate,
-      endDate,
+    setFilters((prev) => ({
+      ...prev,
       page: newPage,
-      limit: 10,
-    });
+    }));
   };
 
   if (loading) {
@@ -234,48 +229,51 @@ export default function Home() {
           {pagination.totalPages > 1 && (
             <div className="flex items-center justify-between border-t border-gray-200 px-2 py-4">
               <button
-                onClick={() => handlePageChange(page - 1)}
-                disabled={page === 1 || loading}
+                onClick={() => handlePageChange((filters.page ?? 1) - 1)}
+                disabled={(filters.page ?? 1) === 1 || loading}
                 className="rounded border border-gray-300 px-3 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Previous
               </button>
 
               <div className="flex items-center gap-2">
-                {getPaginationPages(page, pagination.totalPages).map(
-                  (pageNumber, index) => {
-                    if (pageNumber === "...") {
-                      return (
-                        <span
-                          key={`ellipsis-${index}`}
-                          className="px-2 text-sm text-gray-500"
-                        >
-                          ...
-                        </span>
-                      );
-                    }
-
+                {getPaginationPages(
+                  filters.page ?? 1,
+                  pagination.totalPages,
+                ).map((pageNumber, index) => {
+                  if (pageNumber === "...") {
                     return (
-                      <button
-                        key={pageNumber}
-                        onClick={() => handlePageChange(pageNumber)}
-                        disabled={loading}
-                        className={`rounded px-3 py-2 text-sm ${
-                          page === pageNumber
-                            ? "bg-[#6B6054] text-white"
-                            : "border border-gray-300 bg-white text-gray-700"
-                        }`}
+                      <span
+                        key={`ellipsis-${index}`}
+                        className="px-2 text-sm text-gray-500"
                       >
-                        {pageNumber}
-                      </button>
+                        ...
+                      </span>
                     );
-                  },
-                )}
+                  }
+
+                  return (
+                    <button
+                      key={pageNumber}
+                      onClick={() => handlePageChange(pageNumber)}
+                      disabled={loading}
+                      className={`rounded px-3 py-2 text-sm ${
+                        (filters.page ?? 1) === pageNumber
+                          ? "bg-[#6B6054] text-white"
+                          : "border border-gray-300 bg-white text-gray-700"
+                      }`}
+                    >
+                      {pageNumber}
+                    </button>
+                  );
+                })}
               </div>
 
               <button
-                onClick={() => handlePageChange(page + 1)}
-                disabled={page === pagination.totalPages || loading}
+                onClick={() => handlePageChange((filters.page ?? 1) + 1)}
+                disabled={
+                  (filters.page ?? 1) === pagination.totalPages || loading
+                }
                 className="rounded border border-gray-300 px-3 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Next

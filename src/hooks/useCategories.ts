@@ -5,91 +5,88 @@ import {
   createCategory as createCategoryService,
   updateCategory as updateCategoryService,
   getCategory as getCategoryService,
-  deleteCategory as deleteCategoryService
+  deleteCategory as deleteCategoryService,
 } from "@/services/category.service";
-import { Category, CreateCategoryInput } from "@/types/category";
-import { useState, useEffect } from "react";
+import { CreateCategoryInput } from "@/types/category";
+
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
 export const useCategories = () => {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const queryClient = useQueryClient();
 
-  const fetchCategories = async () => {
-    try {
-      setLoading(true);
-      setError("");
-      const data = await getCategories();
-      setCategories(data);
-    } catch (error) {
-      console.error("Failed to fetch categories", error);
-      setError("Failed to fetch categories");
-      setCategories([]);
-    } finally {
-      setLoading(false);
-    }
+  //GET
+  const {
+    data: categories = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["categories"],
+    queryFn: () => getCategories,
+  });
+
+  //Create
+  const createMutation = useMutation({
+    mutationFn: createCategoryService,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["categories"],
+      });
+    },
+  });
+  const createCategory = async (input: CreateCategoryInput) => {
+    await createMutation.mutateAsync(input);
   };
 
-  const createCategory = async ({ name, icon, color }: CreateCategoryInput) => {
-    try {
-      const newCategory = await createCategoryService({ name, icon, color });
-      setCategories((prev) => [...prev, newCategory]);
-    } catch (error) {
-      console.error("Failed to create category", error);
-    }
-  };
-
-  const getCategory = async (id:string) => {
+  //GET Single
+  const getCategory = async (id: string) => {
     try {
       const category = await getCategoryService(id);
-      return category
+      return category;
     } catch (error) {
-      console.error("Failed to fetch category", error)
-      throw error
-    }
-  }
-
-  const updateCategory = async (
-    id: string,
-    { name, icon, color }: CreateCategoryInput,
-  ) => {
-    try {
-      const updatedCategory = await updateCategoryService(id, {
-        name,
-        icon,
-        color,
-      });
-      setCategories((prev) =>
-        prev.map((category) =>
-          category.id === updatedCategory.id ? updatedCategory : category,
-        ),
-      );
-    } catch (error) {
-      console.error("Failed to update category", error);
+      console.error("Failed to fetch category", error);
+      throw error;
     }
   };
 
-  const deleteCategory = async (id:string) => {
-    try {
-      await deleteCategoryService(id)
-      setCategories((prev) =>
-      prev.filter((category)=>category.id !== id))
-    } catch (error) {
-      console.error("Failed to delete category",error)
-    }
-  }
+  //UPDATE
+  const updateMutation = useMutation({
+    mutationFn: ({ id, input }: { id: string; input: CreateCategoryInput }) =>
+      updateCategoryService(id, input),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey:["categories"]
+      })
+    },
+  });
+  const updateCategory = async (
+    id: string,
+    input: CreateCategoryInput,
+  ) => {
+    await updateMutation.mutateAsync({id, input});
+      
+  };
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
+  //DELETE
+  const deleteMutation = useMutation({
+    mutationFn: deleteCategoryService,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey:["categories"]
+      })
+    },
+  })
+  const deleteCategory = async (id: string) => {
+    await deleteMutation.mutateAsync(id);
+      
+  };
 
   return {
     categories,
-    loading,
-    error,
-    refetch: fetchCategories,
+    loading: isLoading,
+    error: isError ? "Failed to fetch categories" : "",
     createCategory,
     updateCategory,
     getCategory,
-    deleteCategory
+    deleteCategory,
   };
 };

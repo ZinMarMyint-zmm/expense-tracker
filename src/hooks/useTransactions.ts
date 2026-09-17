@@ -9,19 +9,24 @@ import {
 } from "@/services/transaction.service";
 import {
   CreateTransactionInput,
-  Transaction,
   TransactionFilters,
-  TransactionPagination,
 } from "@/types/transaction";
+import { useState } from "react";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useTransactions = () => {
   const queryClient = useQueryClient();
+
+  //client side filter state
+  const [filters, setFilters] = useState<TransactionFilters>({
+    page: 1,
+    limit: 10
+  })
   //GET
   const { data, isLoading, isError } = useQuery({
-    queryKey: ["transactions"],
-    queryFn: () => getTransactions(),
+    queryKey: ["transactions",filters],
+    queryFn: () => getTransactions(filters),
   });
 
   const transactions = data?.transactions ?? [];
@@ -46,6 +51,7 @@ export const useTransactions = () => {
     await createMutation.mutateAsync(input);
   };
 
+  //Get Single
   const getTransaction = async (id: string) => {
     try {
       const transaction = await getTransactionService(id);
@@ -56,6 +62,7 @@ export const useTransactions = () => {
     }
   };
 
+  // Update
   const updateMutation = useMutation({
     mutationFn: ({
       id,
@@ -81,7 +88,7 @@ export const useTransactions = () => {
     });
   };
 
-  
+  //Delete
   const deleteMutation = useMutation({
     mutationFn: deleteTransactionService,
 
@@ -101,6 +108,8 @@ export const useTransactions = () => {
     pagination,
     loading: isLoading,
     error: isError ? "Failed to fetch transactions" : "",
+    filters,
+    setFilters,
     createTransaction,
     updateTransaction,
     getTransaction,

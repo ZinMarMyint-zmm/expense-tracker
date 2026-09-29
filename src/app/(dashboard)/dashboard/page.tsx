@@ -10,10 +10,9 @@ export default function Home() {
   console.log(expenseByCategory);
 
   return (
-    <>
-      <p className="mb-3">An overview of expense dashboard</p>
+    <section className="my-3">
       <ItemCard summary={summary} />
       <Statistics monthly={monthly} expenseByCategory={expenseByCategory} />
-    </>
+    </section>
   );
 }

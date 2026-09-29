@@ -13,13 +13,13 @@ export default function Landing() {
       <nav className="border-b border-slate-200 bg-white/80 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Wallet className="w-6 h-6 text-[#828C51]" />
+            <Wallet className="w-6 h-6 text-[#f89f1b]" />
             <span className="font-bold text-xl tracking-tight">
               Money Tracker
             </span>
           </div>
           <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
-            {/* <a href="#features" className="hover:text-[#828C51] transition">
+            {/* <a href="#features" className="hover:text-[#f89f1b] transition">
               Features
             </a> */}
             {/* <a
@@ -35,13 +35,13 @@ export default function Landing() {
           <div className="flex items-center gap-4">
             <Link
               href="/login"
-              className="text-sm font-medium text-slate-600 hover:text-[#828C51] transition"
+              className="text-sm font-medium text-slate-600 hover:text-[#f89f1b] transition"
             >
               Sign In
             </Link>
             <Link
               href="/register"
-              className="bg-[#828C51] hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm"
+              className="bg-[#f89f1b] hover:bg-[#faecd5] hover:text-gray-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm"
             >
               Register
             </Link>
@@ -51,13 +51,13 @@ export default function Landing() {
       <header className="min-h-[calc(100vh-4rem)] max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12 items-center">
         {/* Left - Hero Text */}
         <div>
-          <p className="text-[#828C51] font-semibold mb-4">
+          <p className="text-[#f89f1b] font-semibold mb-4">
             SIMPLE. CLEAR. FINANCIAL.
           </p>
 
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 leading-tight">
             Take Control of Your Money,{" "}
-            <span className="text-[#828C51]">Effortlessly.</span>
+            <span className="text-[#f89f1b]">Effortlessly.</span>
           </h1>
 
           <p className="mt-6 text-lg sm:text-xl text-slate-600 max-w-xl">
@@ -68,7 +68,7 @@ export default function Landing() {
           <div className="mt-10 flex flex-col sm:flex-row gap-4">
             <Link
               href="/register"
-              className="bg-[#828C51] hover:bg-emerald-700 text-white px-8 py-4 rounded-xl font-semibold flex items-center justify-center gap-2 transition shadow-lg shadow-[#828C51]/20"
+              className="bg-[#f89f1b] hover:bg-[#faecd5] hover:text-gray-800 text-white px-8 py-4 rounded-xl font-semibold flex items-center justify-center gap-2 transition shadow-lg shadow-[#f89f1b]/20"
             >
               Get Started
               <ArrowRight className="w-5 h-5" />
@@ -76,7 +76,7 @@ export default function Landing() {
 
             <Link
               href="/login"
-              className="border border-slate-300 hover:border-[#828C51] hover:text-[#828C51] text-slate-700 px-8 py-4 rounded-xl font-semibold flex items-center justify-center transition"
+              className="border border-slate-300 hover:border-[#f89f1b] hover:text-[#f89f1b] text-slate-700 px-8 py-4 rounded-xl font-semibold flex items-center justify-center transition"
             >
               Sign In
             </Link>
@@ -96,7 +96,7 @@ export default function Landing() {
                 <p className="text-3xl font-bold text-slate-900">$2,450.80</p>
               </div>
 
-              <Wallet className="w-8 h-8 text-[#828C51]" />
+              <Wallet className="w-8 h-8 text-[#f89f1b]" />
             </div>
 
             {/* Income */}
@@ -175,7 +175,7 @@ export default function Landing() {
       <section id="features" className="bg-white border-t border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <p className="text-[#828C51] font-semibold mb-3">FEATURES</p>
+            <p className="text-[#f89f1b] font-semibold mb-3">FEATURES</p>
 
             <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
               Everything you need to understand your money
@@ -190,7 +190,7 @@ export default function Landing() {
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Transaction Tracking */}
             <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200">
-              <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-[#828C51] mb-5">
+              <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-[#f89f1b] mb-5">
                 <Wallet className="w-6 h-6" />
               </div>
 
@@ -206,7 +206,7 @@ export default function Landing() {
 
             {/* Dashboard */}
             <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200">
-              <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-[#828C51] mb-5">
+              <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-[#f89f1b] mb-5">
                 <BarChart3 className="w-6 h-6" />
               </div>
 
@@ -220,7 +220,7 @@ export default function Landing() {
 
             {/* Categories */}
             <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200">
-              <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-[#828C51] mb-5">
+              <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-[#f89f1b] mb-5">
                 <CheckCircle className="w-6 h-6" />
               </div>
 
@@ -234,7 +234,7 @@ export default function Landing() {
 
             {/* Authentication */}
             <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200">
-              <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-[#828C51] mb-5">
+              <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center text-[#f89f1b] mb-5">
                 <Shield className="w-6 h-6" />
               </div>
 

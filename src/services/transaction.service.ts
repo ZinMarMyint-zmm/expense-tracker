@@ -1,6 +1,7 @@
 import {
   Transaction,
   CreateTransactionInput,
+  CreateTransactionPayload,
   TransactionFilters,
   TransactionsResponse,
 } from "@/types/transaction";
@@ -38,20 +39,38 @@ export async function getTransactions(
 }
 
 export async function createTransaction(
-  transaction: CreateTransactionInput,
+  transaction: CreateTransactionPayload,
 ): Promise<Transaction> {
-  const { title, categoryId, type, amount, date, note } = transaction;
+  const {
+    title,
+    categoryId,
+    type,
+    amount,
+    date,
+    note,
+    currency,
+  } = transaction;
 
   const response = await fetch("/api/transactions", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ title, categoryId, type, amount, date, note }),
+    body: JSON.stringify({
+      title,
+      categoryId,
+      type,
+      amount,
+      date,
+      note,
+      currency,
+    }),
   });
+
   if (!response.ok) {
-    throw new Error("Failed to create categories");
+    throw new Error("Failed to create transaction");
   }
+
   return response.json();
 }
 

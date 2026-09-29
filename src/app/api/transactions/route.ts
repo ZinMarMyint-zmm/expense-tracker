@@ -93,7 +93,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { title, type, amount, date, note, categoryId } = body;
+    const { title, type, amount, date, note, categoryId, currency } = body;
 
     const user = await getCurrentUser();
 
@@ -109,7 +109,8 @@ export async function POST(request: Request) {
       !Number.isFinite(numericAmount) ||
       numericAmount <= 0 ||
       !date ||
-      !categoryId
+      !categoryId ||
+      !currency
     ) {
       return NextResponse.json(
         {
@@ -117,6 +118,11 @@ export async function POST(request: Request) {
         },
         { status: 400 },
       );
+    }
+    const validCurrencies = ["USD", "MMK", "THB", "JPY"];
+
+    if (!validCurrencies.includes(currency)) {
+      return NextResponse.json({ error: "Invalid currency." }, { status: 400 });
     }
     const newTransaction = await prisma.transaction.create({
       data: {
@@ -127,8 +133,10 @@ export async function POST(request: Request) {
         note: note || null,
         userId: user.id,
         categoryId,
+        currency,
       },
     });
+
     return NextResponse.json(newTransaction, { status: 201 });
   } catch (error) {
     console.error("Failed creating a new transaction", error);

@@ -33,14 +33,14 @@ export default function Register() {
   };
 
   return (
-    <section className="min-h-screen bg-[#D5ECD4] flex items-center justify-center px-4 py-10">
+    <section className="min-h-screen flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-5xl bg-white rounded-3xl shadow-xl overflow-hidden grid md:grid-cols-2">
         {/* Left Side */}
-        <div className="hidden md:flex bg-[#6B6054] text-[#D5ECD4] p-10 flex-col justify-between">
+        <div className="hidden md:flex bg-[#f89f1b] text-[#6B6054] p-10 flex-col justify-between">
           <div>
             <h2 className="text-3xl font-bold">Money Tracker</h2>
 
-            <p className="mt-3 text-[#D5ECD4]/80 leading-relaxed">
+            <p className="mt-3 text-[#6B6054]/80 leading-relaxed">
               Take control of your money and understand your financial activity
               in one simple place.
             </p>
@@ -55,7 +55,7 @@ export default function Register() {
               today.
             </p>
 
-            <p className="mt-5 text-sm text-[#D5ECD4]/70">
+            <p className="mt-5 text-sm text-[#6B6054]/70">
               Simple. Clear. Financial.
             </p>
           </div>
@@ -95,7 +95,7 @@ export default function Register() {
                   name="name"
                   required
                   placeholder="Enter your name"
-                  className="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm text-[#6B6054] outline-none transition focus:border-[#6B6054] focus:ring-2 focus:ring-[#D5ECD4]"
+                  className="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm text-[#6B6054] outline-none transition focus:border-[#faecd5] focus:ring-2 focus:ring-[#faecd5]/20"
                 />
               </div>
 
@@ -114,7 +114,7 @@ export default function Register() {
                   name="email"
                   required
                   placeholder="Enter your email"
-                  className="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm text-[#6B6054] outline-none transition focus:border-[#6B6054] focus:ring-2 focus:ring-[#D5ECD4]"
+                  className="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm text-[#6B6054] outline-none transition focus:border-[#faecd5] focus:ring-2 focus:ring-[#faecd5]/20"
                 />
               </div>
 
@@ -133,7 +133,7 @@ export default function Register() {
                   name="password"
                   required
                   placeholder="Create a password"
-                  className="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm text-[#6B6054] outline-none transition focus:border-[#6B6054] focus:ring-2 focus:ring-[#D5ECD4]"
+                  className="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm text-[#6B6054] outline-none transition focus:border-[#faecd5] focus:ring-2 focus:ring-[#faecd5]/20"
                 />
               </div>
 
@@ -141,14 +141,14 @@ export default function Register() {
               <div className="flex gap-3 pt-3">
                 <Link
                   href="/"
-                  className="flex-1 rounded-lg bg-[#D5ECD4] px-4 py-3 text-center text-sm font-semibold text-[#6B6054] transition hover:opacity-80"
+                  className="flex-1 rounded-lg bg-[#faecd5] px-4 py-3 text-center text-sm font-semibold text-[#6B6054] transition hover:opacity-80"
                 >
                   Cancel
                 </Link>
 
                 <button
                   type="submit"
-                  className="flex-1 rounded-lg bg-[#6B6054] px-4 py-3 text-sm font-semibold text-[#D5ECD4] transition hover:opacity-90"
+                  className="flex-1 rounded-lg bg-[#f89f1b] px-4 py-3 text-sm font-semibold text-[#faecd5] transition hover:opacity-90"
                 >
                   Register
                 </button>

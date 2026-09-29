@@ -8,21 +8,27 @@ import {
 
 import { useQueries } from '@tanstack/react-query';
 
+import { useAppSelector } from "@/store/hooks";
+
 export const useDashboard = () => {
+
+  const selectedCurrency = useAppSelector(
+  (state) => state.currency.currency
+);
 
   const [summaryQuery, monthlyQuery, expenseQuery] = useQueries({
     queries: [
       {
-        queryKey: ['dashboardSummary'],
-        queryFn: getDashboardSummary,
+        queryKey: ['dashboardSummary',selectedCurrency],
+        queryFn: ()=>getDashboardSummary(selectedCurrency),
       },
       {
-        queryKey: ['dashboardMonthly'],
-        queryFn: getMonthlyData,
+        queryKey: ['dashboardMonthly',selectedCurrency],
+        queryFn: ()=>getMonthlyData(selectedCurrency),
       },
       {
-        queryKey: ['dashboardExpenseByCategory'],
-        queryFn: getExpenseByCategory,
+        queryKey: ['dashboardExpenseByCategory',selectedCurrency],
+        queryFn: ()=>getExpenseByCategory(selectedCurrency),
       },
     ],
   });

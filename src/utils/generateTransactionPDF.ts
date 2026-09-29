@@ -1,106 +1,89 @@
 import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import { Transaction } from "@/types/transaction";
 import { formatDate } from "./formatDate";
+import { convertCurrency, type ExchangeRate } from "@/lib/exchangeRate";
+import { formatCurrency } from "@/lib/currencyFormatter";
+import { type Currency } from "@/lib/currency";
 
-export function generateTransactionPDF(transactions: Transaction[]) {
+declare module "jspdf" {
+  interface jsPDF {
+    lastAutoTable: {
+      finalY: number;
+    };
+  }
+}
+
+export function generateTransactionPDF(
+  transactions: Transaction[],
+  selectedCurrency: string,
+  rates: ExchangeRate[]
+) {
   const doc = new jsPDF();
+  const targetCurrency = selectedCurrency as Currency;
 
-  //calculate summary
   const totalIncome = transactions
     .filter((transaction) => transaction.type === "INCOME")
-    .reduce((total, transaction) => total + Number(transaction.amount), 0);
+    .reduce((total, transaction) => {
+      const converted = convertCurrency(transaction.amount, transaction.currency, targetCurrency, rates);
+      return total + converted;
+    }, 0);
 
   const totalExpense = transactions
     .filter((transaction) => transaction.type === "EXPENSE")
-    .reduce((total, transaction) => total + Number(transaction.amount), 0);
+    .reduce((total, transaction) => {
+      const converted = convertCurrency(transaction.amount, transaction.currency, targetCurrency, rates);
+      return total + converted;
+    }, 0);
 
   const balance = totalIncome - totalExpense;
 
-  //Headers
-  doc.setFontSize(20);
-  doc.text("Expense Tracker", 20, 20);
-
+  doc.setFontSize(22);
+  doc.text("Expense Tracker", 14, 20);
   doc.setFontSize(12);
-  doc.text("Transaction Report", 20, 30);
+  doc.text("Transaction Report", 14, 28);
 
-  // Summary
-  doc.setFontSize(14);
-  doc.text("Summary", 20, 45);
+  autoTable(doc, {
+    startY: 35,
+    head: [["Summary Type", "Amount"]],
+    body: [
+      ["Total Income", formatCurrency(totalIncome, targetCurrency)],
+      ["Total Expense", formatCurrency(totalExpense, targetCurrency)],
+      ["Balance", formatCurrency(balance, targetCurrency)],
+    ],
+    theme: "striped",
+    headStyles: { fillColor: [107, 96, 84] },
+    margin: { left: 14 },
+    styles: { font: "Helvetica" }
+  });
 
-  doc.setFontSize(11);
-  doc.text(`Total Income: ${totalIncome.toFixed(2)}`, 20, 55);
-  doc.text(`Total Expense: ${totalExpense.toFixed(2)}`, 20, 65);
-  doc.text(`Balance: ${balance.toFixed(2)}`, 20, 75);
+  const tableHeaders = [["Title", "Category", "Type", "Amount", "Date", "Note"]];
+  
+  const tableRows = transactions.map((transaction) => {
+    const formattedAmount = formatCurrency(
+      convertCurrency(transaction.amount, transaction.currency, targetCurrency, rates),
+      targetCurrency
+    );
 
-  // Transaction Table
-  doc.setFontSize(14);
-  doc.text("Transactions", 20, 90);
-
-  let y = 100;
-
-  // Table headers
-  doc.setFontSize(10);
-
-  doc.text("Title", 20, y);
-  doc.text("Category", 60, y);
-  doc.text("Type", 100, y);
-  doc.text("Amount", 130, y);
-  doc.text("Date", 160, y);
-
-  y += 7;
-
-  // Separator
-  doc.line(20, y, 190, y);
-
-  y += 7;
-
-   // Table rows
-  transactions.forEach((transaction) => {
-    doc.text(transaction.title, 20, y);
-
-    doc.text(
+    return [
+      transaction.title,
       transaction.category?.name ?? "",
-      60,
-      y,
-    );
-
-    doc.text(transaction.type, 100, y);
-
-    doc.text(
-      Number(transaction.amount).toFixed(2),
-      130,
-      y,
-    );
-
-    doc.text(
+      transaction.type,
+      formattedAmount,
       formatDate(transaction.date),
-      160,
-      y,
-    );
+      transaction.note ?? "",
+    ];
+  });
 
-    y += 7;
-
-    // New page
-    if (y > 280) {
-      doc.addPage();
-
-      y = 20;
-
-      doc.setFontSize(10);
-
-      doc.text("Title", 20, y);
-      doc.text("Category", 60, y);
-      doc.text("Type", 100, y);
-      doc.text("Amount", 130, y);
-      doc.text("Date", 160, y);
-
-      y += 7;
-
-      doc.line(20, y, 190, y);
-
-      y += 7;
-    }
-     });
+  autoTable(doc, {
+    startY: doc.lastAutoTable.finalY + 15,
+    head: tableHeaders,
+    body: tableRows,
+    theme: "grid",
+    headStyles: { fillColor: [248, 159, 27] }, 
+    margin: { left: 14 },
+    styles: { font: "Helvetica", overflow: "linebreak" },
+  });
 
   doc.save("transactions.pdf");
 }

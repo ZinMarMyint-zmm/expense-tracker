@@ -21,7 +21,7 @@ export const useCategories = () => {
     isError,
   } = useQuery({
     queryKey: ["categories"],
-    queryFn: () => getCategories,
+    queryFn: () => getCategories(),
   });
 
   //Create

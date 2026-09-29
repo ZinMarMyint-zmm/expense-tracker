@@ -11,13 +11,13 @@ export default function Home() {
       <div className="flex justify-end gap-3 my-5">
         <Link
           href="categories/add"
-          className="font-mono text-sm btn bg-[#6B6054] text-white p-2 rounded"
+          className="font-mono text-sm btn bg-[#f89f1b] text-white p-2 rounded"
         >
           Add Category
         </Link>
       </div>
       <div>
-        <table className="table-auto md:table-fixed w-full text-sm text-left rtl:text-right text-body">
+        <table className="table-auto md:table-fixed w-full text-sm text-left rtl:text-right text-body bg-white rounded-2xl">
           <thead className="text-sm text-body bg-neutral-secondary-soft border-b rounded-base border-default">
             <tr>
               <th scope="col" className="px-6 py-3 text-heading">

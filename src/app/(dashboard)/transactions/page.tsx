@@ -14,6 +14,10 @@ import { exportTransactions } from "@/utils/exportTransactions";
 import { generateTransactionPDF } from "@/utils/generateTransactionPDF";
 import { getPaginationPages } from "@/utils/getPaginationPages";
 import { useState } from "react";
+import { useAppSelector } from "@/store/hooks";
+import { useExchangeRates } from "@/hooks/useExchangeRates";
+import { convertCurrency } from "@/lib/exchangeRate";
+import { formatCurrency } from "@/lib/currencyFormatter";
 
 export default function Home() {
   const {
@@ -25,6 +29,10 @@ export default function Home() {
     error,
     deleteTransaction,
   } = useTransactions();
+
+  const selectedCurrency = useAppSelector((state) => state.currency.currency);
+
+  const { data: rates = [], isLoading: ratesLoading } = useExchangeRates();
 
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -41,11 +49,11 @@ export default function Home() {
   };
 
   const handleExport = () => {
-    exportTransactions(transactions);
+    exportTransactions(transactions, selectedCurrency, rates);
   };
 
   const handlePDFDownload = () => {
-    generateTransactionPDF(transactions);
+    generateTransactionPDF(transactions, selectedCurrency, rates);
   };
 
   const handlePageChange = (newPage: number) => {
@@ -55,7 +63,7 @@ export default function Home() {
     }));
   };
 
-  if (loading) {
+  if (loading || ratesLoading) {
     return (
       <div className="flex min-h-75 items-center justify-center">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-[#6B6054]" />
@@ -81,7 +89,7 @@ export default function Home() {
           <p className="font-mono text-sm">Export</p>
         </button>
         <Link href="transactions/add">
-          <button className="btn bg-[#6B6054] text-white p-2 rounded">
+          <button className="btn bg-[#f89f1b] text-white p-2 rounded">
             <p className="font-mono text-sm">Add Transaction</p>
           </button>
         </Link>
@@ -185,7 +193,15 @@ export default function Home() {
                         scope="row"
                         className="px-4 py-3 font-medium text-heading whitespace-nowrap"
                       >
-                        {transaction.amount}
+                        {formatCurrency(
+                          convertCurrency(
+                            transaction.amount,
+                            transaction.currency,
+                            selectedCurrency,
+                            rates,
+                          ),
+                          selectedCurrency,
+                        )}
                       </td>
                       <td
                         scope="row"

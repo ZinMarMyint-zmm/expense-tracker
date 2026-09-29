@@ -1,5 +1,7 @@
-export async function getDashboardSummary() {
-    const response = await fetch("/api/dashboard/summary");
+import { Currency } from "@/lib/currency";
+
+export async function getDashboardSummary(currency: Currency) {
+    const response = await fetch(`/api/dashboard/summary?currency=${currency}`);
     if (!response.ok) {
         throw new Error("Failed to fetch summary")
     }
@@ -7,16 +9,16 @@ export async function getDashboardSummary() {
 }
 
 
-export async function getMonthlyData() {
-    const response = await fetch("/api/dashboard/monthly");
+export async function getMonthlyData(currency: Currency) {
+    const response = await fetch(`/api/dashboard/monthly?currency=${currency}`);
     if (!response.ok) {
         throw new Error("Failed to fetch monthly data")
     }
     return response.json()
 }
 
-export async function getExpenseByCategory() {
-    const response = await fetch("/api/dashboard/expense-by-category");
+export async function getExpenseByCategory(currency: Currency) {
+    const response = await fetch(`/api/dashboard/expense-by-category?currency=${currency}`);
     if (!response.ok) {
         throw new Error("Failed to fetch expense by category")
     }

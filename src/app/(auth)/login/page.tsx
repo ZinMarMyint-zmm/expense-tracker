@@ -99,7 +99,7 @@ export default function Login() {
               id="email"
               name="email"
               required
-              className="block w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20"
+              className="block w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-[#faecd5] focus:ring-2 focus:ring-[#faecd5]/20"
               placeholder="Enter your email"
             />
           </div>
@@ -120,7 +120,7 @@ export default function Login() {
               id="password"
               name="password"
               required
-              className="block w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-[#A6C36F] focus:ring-2 focus:ring-emerald-500/20"
+              className="block w-full rounded-lg border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-[#faecd5] focus:ring-2 focus:ring-[#faecd5]/20"
               placeholder="Enter your password"
             />
           </div>
@@ -129,7 +129,7 @@ export default function Login() {
           {error && <p className="text-sm text-red-500">{error}</p>}
           <button
             type="submit"
-            className="w-full rounded-lg bg-[#6B6054] py-3 text-sm font-semibold text-white transition hover:bg-[#A6C36F]"
+            className="w-full rounded-lg bg-[#f89f1b] py-3 text-sm font-semibold text-white transition hover:bg-[#f6ce92]"
           >
             Sign In
           </button>
@@ -139,7 +139,7 @@ export default function Login() {
             Don&apos;t have an account?
             <Link
               href="/register"
-              className="font-semibold text-[#6B6054] hover:text-[#A6C36F]"
+              className="font-semibold text-[#f89f1b] hover:text-[#a1a39f]"
             >
               Create one
             </Link>

@@ -51,6 +51,13 @@ model Category {
   transactions Transaction[]
 }
 
+enum Currency {
+  USD
+  MMK
+  THB
+  JPY
+}
+
 enum TransactionType {
   INCOME
   EXPENSE
@@ -61,6 +68,7 @@ model Transaction {
   title String
   type TransactionType
   amount Decimal
+  currency Currency @default(USD)
   date DateTime
   note String?
   createdAt DateTime @default(now())
@@ -68,6 +76,7 @@ model Transaction {
 
   userId String
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
   categoryId String
   category Category @relation(fields: [categoryId], references: [id])
 

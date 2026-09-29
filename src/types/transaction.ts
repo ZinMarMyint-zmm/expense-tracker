@@ -1,3 +1,5 @@
+import { Currency } from "@/lib/currency";
+
 export type TransactionType = 'INCOME' | 'EXPENSE';
 
 export interface Transaction{
@@ -7,7 +9,7 @@ export interface Transaction{
   amount: number;
   date: string;
   note: string | null;
-
+  currency: Currency;
   userId: string;
   categoryId: string;
 
@@ -27,6 +29,10 @@ export interface CreateTransactionInput{
     date: string
     note: string | null
 }
+
+export type CreateTransactionPayload = CreateTransactionInput & {
+  currency: Currency;
+};
 
 export type TransactionFilters = {
   startDate?: string;

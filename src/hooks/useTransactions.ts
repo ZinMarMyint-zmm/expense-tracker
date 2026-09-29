@@ -15,8 +15,14 @@ import { useState } from "react";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
+import { useAppSelector } from "@/store/hooks";
+
 export const useTransactions = () => {
   const queryClient = useQueryClient();
+
+  const selectedCurrency = useAppSelector(
+  (state) => state.currency.currency
+);
 
   //client side filter state
   const [filters, setFilters] = useState<TransactionFilters>({
@@ -39,17 +45,20 @@ export const useTransactions = () => {
 
   //Create
   const createMutation = useMutation({
-    mutationFn: createTransactionService,
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["transactions"],
-      });
-    },
-  });
+  mutationFn: createTransactionService,
+  onSuccess: () => {
+    queryClient.invalidateQueries({
+      queryKey: ["transactions"],
+    });
+  },
+});
 
   const createTransaction = async (input: CreateTransactionInput) => {
-    await createMutation.mutateAsync(input);
-  };
+  await createMutation.mutateAsync({
+    ...input,
+    currency: selectedCurrency,
+  });
+};
 
   //Get Single
   const getTransaction = async (id: string) => {

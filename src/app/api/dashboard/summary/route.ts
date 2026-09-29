@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
 import { fetchExchangeRates, convertCurrency } from "@/lib/exchangeRate";
-import { type Currency } from "@/lib/currency";
+import { Currency } from "@/lib/currency";
 
 // GET /api/dashboard/summary
 export async function GET(request: Request) {

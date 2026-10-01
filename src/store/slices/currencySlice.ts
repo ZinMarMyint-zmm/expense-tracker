@@ -8,7 +8,7 @@ type CurrencyState = {
 }
 
 const initialState: CurrencyState = {
-    currency : 'USD'
+    currency : 'THB'
 }
 
 const currencySlice = createSlice({

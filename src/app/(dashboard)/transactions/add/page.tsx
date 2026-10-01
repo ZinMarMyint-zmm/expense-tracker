@@ -4,10 +4,11 @@ import { createTransaction } from "@/services/transaction.service";
 import { TransactionType } from "@/types/transaction";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Currency } from "@/lib/currency";
+import { useTransactions } from "@/hooks/useTransactions";
 export default function Home() {
   const router = useRouter();
   const { categories, loading } = useCategories();
+  const { createTransaction } = useTransactions();
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -39,7 +40,6 @@ export default function Home() {
       amount: amountNumber,
       date,
       note,
-      currency: "USD" as Currency,
     });
     router.push("/transactions");
   };

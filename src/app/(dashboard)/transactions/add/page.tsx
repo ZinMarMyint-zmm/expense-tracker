@@ -70,7 +70,7 @@ export default function Home() {
           </div>
           <div>
             <label
-              htmlFor="category"
+              htmlFor="categoryId"
               className="block mb-2.5 text-sm font-medium text-heading"
             >
               Category
@@ -154,10 +154,11 @@ export default function Home() {
             />
           </div>
           <div className="text-center space-x-4">
-            <Link href="/transactions">
-              <button className="btn bg-[#D5ECD4] text-[#6B6054] px-2 py-1 rounded">
-                Cancel
-              </button>
+            <Link
+              href="/transactions"
+              className="btn bg-[#D5ECD4] text-[#6B6054] px-2 py-1 rounded"
+            >
+              Cancel
             </Link>
             <button className="btn bg-[#6B6054] text-[#D5ECD4] px-2 py-1 rounded">
               Save

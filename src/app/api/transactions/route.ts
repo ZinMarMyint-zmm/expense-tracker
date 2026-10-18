@@ -1,6 +1,7 @@
 import { getCurrentUser } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { validateTransactionInput } from "@/lib/transactionValidation";
 
 // GET /api/transactions
 export async function GET(request: Request) {
@@ -101,29 +102,22 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const numericAmount = Number(amount);
+    const validationError = validateTransactionInput({
+  title,
+  type,
+  amount,
+  date,
+  categoryId,
+  currency,
+});
 
-    if (
-      !title ||
-      !type ||
-      !Number.isFinite(numericAmount) ||
-      numericAmount <= 0 ||
-      !date ||
-      !categoryId ||
-      !currency
-    ) {
-      return NextResponse.json(
-        {
-          error: "Title, type, amount, date, categoryId are required.",
-        },
-        { status: 400 },
-      );
-    }
-    const validCurrencies = ["USD", "MMK", "THB", "JPY"];
-
-    if (!validCurrencies.includes(currency)) {
-      return NextResponse.json({ error: "Invalid currency." }, { status: 400 });
-    }
+if (validationError) {
+  return NextResponse.json(
+    { error: validationError },
+    { status: 400 },
+  );
+}
+    
     const newTransaction = await prisma.transaction.create({
       data: {
         title,

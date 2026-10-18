@@ -86,7 +86,7 @@ export default function Home() {
           </div>
           <div>
             <label
-              htmlFor="category"
+              htmlFor="categoryId"
               className="block mb-2.5 text-sm font-medium text-heading"
             >
               Category

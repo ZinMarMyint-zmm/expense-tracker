@@ -77,7 +77,7 @@ describe("Edit Transaction Page", () => {
 
     expect(screen.getByRole("button", { name: /update/i })).toBeInTheDocument();
 
-    expect(screen.getByRole("button", { name: /cancel/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /cancel/i })).toBeInTheDocument();
   });
 
   it("fetches the transaction using the ID from the route", async () => {

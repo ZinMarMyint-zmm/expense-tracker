@@ -16,7 +16,16 @@ test("user can register and log in", async ({ page }) => {
   // Login
   await page.getByLabel("Email").fill(email);
   await page.getByLabel("Password").fill(password);
+
+  const loginResponsePromise = page.waitForResponse(
+    (response) =>
+      response.url().includes("/api/auth/login") &&
+      response.request().method() === "POST",
+  );
+
   await page.getByRole("button", { name: "Sign In" }).click();
+
+  await loginResponsePromise;
 
   await expect(page).toHaveURL(/\/dashboard$/);
 

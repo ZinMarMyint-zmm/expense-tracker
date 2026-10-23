@@ -51,6 +51,19 @@ A full-stack personal finance and expense tracking application built with **Next
 - Query invalidation after transaction mutations
 - Redux Toolkit for global client-side currency state
 
+### Testing
+
+- Playwright end-to-end testing with Chromium
+- Automated authentication tests covering registration, login, and logout
+- Dashboard expense summary verification
+- Admin category creation test
+- Transaction create, edit, and delete test
+- Application smoke test
+- Separate test database configuration using `.env.test`
+- Test admin account seeding with environment safeguards
+
+**Current E2E test status:** 6 tests passed.
+
 ### Data Management
 
 - PostgreSQL relational database
@@ -73,6 +86,7 @@ A full-stack personal finance and expense tracking application built with **Next
 - **Charts:** Recharts
 - **Currency Data:** Frankfurter API
 - **PDF Generation:** jsPDF + jspdf-autotable
+- **E2E Testing:** Playwright
 - **Deployment:** Vercel
 
 ## Architecture
@@ -169,11 +183,11 @@ Each transaction stores its original currency.
 
 ```text
 Transaction
-    ↓
+       ↓
 amount + currency
-    ↓
+       ↓
 conversion
-    ↓
+       ↓
 selected display currency
 ```
 
@@ -226,16 +240,51 @@ THB 3,000
 Transaction C
 MMK 500,000
 
-        ↓
+       ↓
 
 Selected Currency: THB
 
-        ↓
+       ↓
 
 Converted dashboard values
 ```
 
 This prevents transactions with different original currencies from being incorrectly summed together.
+
+## Automated Testing
+
+The project uses Playwright to test key user workflows in a real browser.
+
+### Run E2E Tests
+
+```bash
+npm run test:e2e
+```
+
+The Playwright configuration starts the development server with environment variables loaded from `.env.test`.
+
+### Test Coverage
+
+| Test               | What it verifies                                |
+| ------------------ | ----------------------------------------------- |
+| Smoke test         | Application opens successfully                  |
+| Authentication     | User can register and log in                    |
+| Session management | User can log out and lose session access        |
+| Dashboard          | Expense summary is displayed correctly          |
+| Categories         | Admin can create a category                     |
+| Transactions       | User can create, edit, and delete a transaction |
+
+### Test Database Setup
+
+The E2E tests use a separate test database configured in `.env.test`. Configure this file with a test database connection string and the required test environment variables before running the suite.
+
+The test admin account can be prepared using:
+
+```bash
+npm run db:seed:test
+```
+
+The seed script checks `E2E_TEST_DB=true` before proceeding. Keep test database credentials and passwords private, and never commit `.env.test`.
 
 ## Local Development
 
@@ -268,6 +317,8 @@ Create a `.env` file in the root directory:
 DATABASE_URL="postgresql://user:password@localhost:5432/expensetracker?schema=public"
 ```
 
+Use your own PostgreSQL connection details.
+
 4. **Run database migrations**
 
 ```bash
@@ -284,11 +335,11 @@ Open `http://localhost:3000` in your browser.
 
 ## Environment Variables
 
-The application requires the following environment variable:
-
 | Variable       | Description                           |
 | -------------- | ------------------------------------- |
 | `DATABASE_URL` | PostgreSQL database connection string |
+
+E2E testing additionally requires the test environment variables configured in `.env.test`, including `E2E_TEST_DB` and `E2E_ADMIN_PASSWORD` for the test seed workflow.
 
 Exchange rates are retrieved from the Frankfurter API and do not require a separate API key.
 
@@ -309,8 +360,16 @@ src/
 ├── types/
 └── utils/
 
+e2e/
+├── auth.spec.ts
+├── categories.spec.ts
+├── dashboard.spec.ts
+├── smoke.spec.ts
+└── transactions.spec.ts
+
 prisma/
-└── schema.prisma
+├── schema.prisma
+└── seed.ts
 ```
 
 - `app/` — Pages, layouts, and API routes
@@ -321,7 +380,8 @@ prisma/
 - `store/` — Redux Toolkit store and slices
 - `types/` — TypeScript types
 - `utils/` — Utility functions such as date formatting and export/PDF generation
-- `prisma/` — Database schema and Prisma configuration
+- `e2e/` — Playwright end-to-end tests
+- `prisma/` — Database schema, migrations, and seed script
 
 ## Screenshots
 
@@ -350,6 +410,5 @@ prisma/
 - Add more advanced transaction filtering and sorting
 - Add additional financial reports and analytics
 - Improve notification and error feedback
-- Add automated testing
 - Improve dashboard empty states
 - Add more production-level validation and monitoring

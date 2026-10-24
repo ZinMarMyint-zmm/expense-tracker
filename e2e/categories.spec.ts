@@ -15,6 +15,12 @@ test("admin can create a category", async ({ page }) => {
   await page.getByLabel("Password").fill(password);
   await page.getByRole("button", { name: "Sign In" }).click();
 
+  await page.waitForTimeout(1000);
+
+  console.log("Current URL:", page.url());
+
+  console.log("Login error:", await page.locator("body").innerText());
+
   await expect(page).toHaveURL(/\/dashboard$/);
 
   // Open the category form

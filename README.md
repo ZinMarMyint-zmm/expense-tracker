@@ -55,7 +55,9 @@ A full-stack personal finance and expense tracking application built with **Next
 
 ### Testing
 
-- Playwright end-to-end testing with Chromium
+- **Vitest** for unit and component testing
+- **React Testing Library** for testing React components and user interactions
+- **Playwright** for end-to-end testing in Chromium
 - Automated authentication tests covering registration, login, and logout
 - Dashboard expense summary verification
 - Admin category creation test
@@ -255,7 +257,17 @@ This prevents transactions with different original currencies from being incorre
 
 ## Automated Testing
 
-The project uses Playwright to test key user workflows in a real browser.
+The project uses a combination of unit, component, and end-to-end testing tools:
+
+- **Vitest** runs unit tests.
+- **React Testing Library** tests React components and user-facing behavior.
+- **Playwright** tests complete user workflows in a real browser.
+
+### Run Unit Tests
+
+```bash
+npx vitest run
+```
 
 ### Run E2E Tests
 

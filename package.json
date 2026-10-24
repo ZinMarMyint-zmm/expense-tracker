@@ -9,7 +9,8 @@
     "lint": "eslint",
     "test": "vitest",
     "test:e2e": "playwright test",
-    "db:seed:test": "dotenv -e .env.test -- tsx prisma/seed.ts"
+    "db:seed:test": "dotenv -e .env.test -- tsx prisma/seed.ts",
+    "db:seed:test:ci": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",

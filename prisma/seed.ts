@@ -37,6 +37,26 @@ async function main() {
   });
 
   console.log(`E2E admin ready: ${admin.email}`);
+
+    const testCategories = [
+    { name: "Food", icon: "🍔", color: "#FF5733" },
+    { name: "Transport", icon: "🚗", color: "#3498DB" },
+    { name: "Salary", icon: "💰", color: "#2ECC71" },
+  ];
+
+  for (const category of testCategories) {
+    await prisma.category.upsert({
+      where: { name: category.name },
+      update: {
+        icon: category.icon,
+        color: category.color,
+        isActive: true,
+      },
+      create: category,
+    });
+  }
+
+  console.log("E2E test categories ready.");
 }
 
 main()

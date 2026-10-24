@@ -1,5 +1,4 @@
 # Smart Expense Tracker
-[![CI](https://github.com/ZinMarMyint-zmm/expense-tracker/actions/workflows/ci.yml/badge.svg)](https://github.com/ZinMarMyint-zmm/expense-tracker/actions/workflows/ci.yml)
 
 A full-stack personal finance and expense tracking application built with **Next.js App Router**, **TypeScript**, **Prisma ORM**, and **PostgreSQL**.
 
